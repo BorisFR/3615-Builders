@@ -1,0 +1,225 @@
+
+
+1/ Écran d'accueil Builders / Star Wars
+
+attente d'appui sur une touche
+pendant ce temps, régulièrement, animer / changer l'écran
+
+faire un code secret (builders) pour acceder à l'écran des paramètres
+
+2/ si saisie du code secret, afficher la page des paramètres
+nombre de questions par QCM : 5 / 10 (valeur par défaut) / 15 / 20
+durée pour la réponse : 30 secondes (par défaut) / 60 secondes / 90 secondes / 120 secondes
+
+touche de retour à l'accueil
+
+3/ Dès appui sur une touche (autre que code secret), affiche jeu QCM
+avec le choix du niveau de difficulté
+de 1 (facile) à 5 (très difficile)
+
+possibilité d'annuler pour revenir à l'accueil
+
+le programme choisit alors les questions parmi celles du niveau de difficulté sélectionné
+
+4/ écran du jeu (boucle sur l'ensemble des questions)
+afficher le numéro de la question / nombre global. Ex. : question 3 / 15
+afficher le niveau de difficulté
+afficher la thématique de la question
+afficher la question
+afficher les 3 réponses possible
+affichage du chronomètre
+attendre la réponse 1, 2 ou 3...
+
+possibilité d'abandonner le jeu (avec une confirmation)
+si délai trop long => affichage direct de la page du résultat
+
+le programme mémorise la réponse et passe à la question suivante.
+Si c'est la dernière question, on passe à l'écran du résultat.
+
+Exemple d'écran (24x40)
+	1234567890123456789012345678901234567890
+	----------------------------------------
+ 0				36-15 Builders			C
+ 1		LLee  QQCCMM  SSttaarr  WWaarrss
+ 2
+ 3	Question : 1 / 15			 Niveau : 1	
+ 4	
+ 5			* * * C I N E M A * * 
+ 6	
+ 7	Question
+ 8	--------
+ 9	Bla bla bla ........ Bla bla bla .......
+10	. Bla bla bla ........ Bla bla bla .....
+11	... Bla bla bla ........ Bla bla bla ...
+12	..... Bla bla bla ........ 	
+13	
+14	Possibilités
+15	------------
+16	 1	qsjdkhqklj fqmsf qsklj 
+17	 2	iuezrg lkdj dklsjjf sdlkj 
+18	 3	dfjg sdjkgziu gklsd kjs					
+19	
+20	Votre réponse :  ?
+21					
+22	Temps restant pour répondre : 6 secondes
+23	
+24					   (c) 2018, R2-Builders
+	----------------------------------------
+
+
+
+5/ Écran du résultat
+Exemple d'écran (24x40)
+	1234567890123456789012345678901234567890
+	----------------------------------------
+ 0				36-15 Builders			C
+ 1		LLee  QQCCMM  SSttaarr  WWaarrss
+ 2	
+ 3	Résultat : 15 / 15
+ 4	
+ 5					___  __   ___ 
+ 6		|\/|  /\  |  |  |__) |__  
+ 7		|  | /~~\ |  |  |  \ |___ 
+ 8			      ___  __    
+ 9			   | |__  |  \ | 
+10			\__/ |___ |__/ | 
+11	
+13				  /  /  /
+14				 /  /  / 
+15				.  .  . 
+16
+
+on clear le buffer clavier
+on attend 10 secondes
+on attend un appui sur le clavier
+on retourne à l'accueil
+si timeout 60 secondes, retour à l'accueil
+
+
+
+'~) / __'| L~  |~)   .| _| _  _ _
+._)(_)  .|._)  |_)|_|||(_|(/_| _\
+__  _        __   _                      
+__)|_ ---/| |_   |_)    o  |  _| _  __ _ 
+__)|_)    | __)  |_)|_| |  | (_|(/_ | _> 
+
+   _   _   _   _   _  
+  / \ / \ / \ / \ / \ 
+ ( 3 | 6 | - | 1 | 5 )
+  \_/ \_/ \_/ \_/ \_/ 
+
+   _   _   _   _   _   _   _   _  
+  / \ / \ / \ / \ / \ / \ / \ / \ 
+ ( B | u | i | l | d | e | r | s )
+  \_/ \_/ \_/ \_/ \_/ \_/ \_/ \_/
+
+
+http://www.patorjk.com/software/taag/
+1234567890123456789012345678901234567890
+
+Straight
+ __                     
+(_ |_ _  _  |  | _  _ _ 
+__)|_(_||   |/\|(_|| _) 
+                        
+
+JS Stick Letter
+ __  ___       __               __   __  
+/__`  |   /\  |__)   |  |  /\  |__) /__` 
+.__/  |  /~~\ |  \   |/\| /~~\ |  \ .__/ 
+                                          
+
+Italic
+  __                 
+ ( _/_ _ (   /_ _  _ 
+__)/(//  |/|/(// _)  
+                    
+
+Bubble
+   _   _   _   _     _   _   _   _  
+  / \ / \ / \ / \   / \ / \ / \ / \ 
+ ( S | t | a | r ) ( W | a | r | s )
+  \_/ \_/ \_/ \_/   \_/ \_/ \_/ \_/
+
+Bigfig
+ __                        
+(_ _|_ _  __   | | _  __ _ 
+__) |_(_| |    |^|(_| | _> 
+
+AMC 3 Line
+.-. .-. .-. .-.   . . . .-. .-. .-. 
+`-.  |  |-| |(    | | | |-| |(  `-. 
+`-'  '  ` ' ' '   `.'.' ` ' ' ' `-'
+
+Small slant
+   ______           _      __           
+  / __/ /____ _____| | /| / /__ ________
+ _\ \/ __/ _ `/ __/| |/ |/ / _ `/ __(_-<
+/___/\__/\_,_/_/   |__/|__/\_,_/_/ /___/
+                                          
+small
+  ___ _            __      __           
+ / __| |_ __ _ _ _ \ \    / /_ _ _ _ ___
+ \__ \  _/ _` | '_| \ \/\/ / _` | '_(_-<
+ |___/\__\__,_|_|    \_/\_/\__,_|_| /__/
+                                         
+
+rectangle
+ _____ _              _ _ _             
+|   __| |_ ___ ___   | | | |___ ___ ___ 
+|__   |  _| .'|  _|  | | | | .'|  _|_ -|
+|_____|_| |__,|_|    |_____|__,|_| |___|
+
+Three Point
+(~_|_ _  _  \    / _  _ _
+_) | (_||    \/\/ (_|| _\
+
+Thin
+,---.|              . . .               
+`---.|--- ,---.,---.| | |,---.,---.,---.
+    ||    ,---||    | | |,---||    `---.
+`---'`---'`---^`    `-'-'`---^`    `---'
+
+
+ __   __             __       /
+|__) |__)  /\  \  / /  \     / 
+|__) |  \ /~~\  \/  \__/    .  
+
+
+ ___              
+|__  |  | |__|    
+|___ \__/ |  | ...
+                  
+
+
+ __        __                      
+|__)  /\  |  \  /\  |  |  /\  |\ | 
+|    /~~\ |__/ /~~\ |/\| /~~\ | \| 
+
+
+      __   __   __   ___      ___   
+ /\  |__) |__) |__) |__  |\ |  |  | 
+/~~\ |    |    |  \ |___ | \|  |  | 
+
+
+      ___  __    
+   | |__  |  \ | 
+\__/ |___ |__/ | 
+
+
+             ___  __   ___ 
+ |\/|  /\  |  |  |__) |__  
+ |  | /~~\ |  |  |  \ |___ 
+                           
+                           
+  /  /  /
+ /  /  / 
+.  .  . 
+
+
+       ___  __   __             __  
+ |\/| |__  /  ` /  `  /\  |\ | /  \ 
+ |  | |___ \__, \__, /~~\ | \| \__/ 
+                                    
+
+

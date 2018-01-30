@@ -10,6 +10,12 @@ faire un code secret (builders) pour acceder à l'écran des paramètres
 2/ si saisie du code secret, afficher la page des paramètres
 nombre de questions par QCM : 5 / 10 (valeur par défaut) / 15 / 20
 durée pour la réponse : 30 secondes (par défaut) / 60 secondes / 90 secondes / 120 secondes
+quota nb questions de niveau supérieur quand tout bon : 0% / 25% (défaut) / 50% / 75%
+
+pour  5 : 0 / 1 / 2 / 3
+pour 10 : 0 / 2 / 5 / 7
+pour 15 : 0 / 3 / 7 / 10
+pour 20 : 0 / 5 / 10 / 15
 
 touche de retour à l'accueil
 
@@ -19,7 +25,7 @@ de 1 (facile) à 5 (très difficile)
 
 possibilité d'annuler pour revenir à l'accueil
 
-le programme choisit alors les questions parmi celles du niveau de difficulté sélectionné
+le programme choisit alors la première question parmi celles du niveau de difficulté sélectionné
 
 4/ écran du jeu (boucle sur l'ensemble des questions)
 afficher le numéro de la question / nombre global. Ex. : question 3 / 15
@@ -33,8 +39,12 @@ attendre la réponse 1, 2 ou 3...
 possibilité d'abandonner le jeu (avec une confirmation)
 si délai trop long => affichage direct de la page du résultat
 
-le programme mémorise la réponse et passe à la question suivante.
+Le programme mémorise la réponse et choisit à la question suivante.
 Si c'est la dernière question, on passe à l'écran du résultat.
+
+Pour le choix de la question => Quand le quota de bonnes question est atteint,
+le programme prendra alors les questions au hasard du niveau suivant ;)
+
 
 Exemple d'écran (24x40)
 	1234567890123456789012345678901234567890

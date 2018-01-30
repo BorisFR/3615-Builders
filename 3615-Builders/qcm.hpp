@@ -1,3 +1,4 @@
+#pragma once
 #ifndef QCM_HPP
 #define QCM_HPP
 

@@ -14,7 +14,7 @@ durée pour la réponse : 30 secondes (par défaut) / 60 secondes / 90 secondes 
 quota nb questions de niveau supérieur quand tout bon : 0% / 25% (défaut) / 50% / 75%
 
 pour  5 : 0 / 1 / 2 / 3
-pour 10 : 0 / 2 / 5 / 7
+pour 10 : 0 / 2 / 5 / 7 
 pour 15 : 0 / 3 / 7 / 10
 pour 20 : 0 / 5 / 10 / 15
 
@@ -50,7 +50,7 @@ le programme prendra alors les questions au hasard du niveau suivant ;)
 Exemple d'écran (24x40)
 	1234567890123456789012345678901234567890
 	----------------------------------------
- 0				36-15 Builders			C
+ 0				36-15 Builders			F
  1		LLee  QQCCMM  SSttaarr  WWaarrss
  2
  3	Question : 1 / 15			 Niveau : 1	

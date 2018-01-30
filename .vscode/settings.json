@@ -1,6 +1,6 @@
 {
 	"terminal.integrated.env.osx": {
-		"PATH": "/Users/sfardoux/.platformio/penv/bin:/Users/sfardoux/.platformio/penv:/usr/local/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/sfardoux/Library/Developer/Xamarin/android-sdk-mac_x86/tools",
+		"PATH": "/Users/sfardoux/.platformio/penv/bin:/Users/sfardoux/.platformio/penv:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/opt/X11/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/local/git/bin",
 		"PLATFORMIO_CALLER": "vscode"
 	}
 }

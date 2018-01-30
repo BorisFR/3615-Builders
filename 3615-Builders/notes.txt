@@ -8,6 +8,7 @@ pendant ce temps, régulièrement, animer / changer l'écran
 faire un code secret (builders) pour acceder à l'écran des paramètres
 
 2/ si saisie du code secret, afficher la page des paramètres
+changer le code secret
 nombre de questions par QCM : 5 / 10 (valeur par défaut) / 15 / 20
 durée pour la réponse : 30 secondes (par défaut) / 60 secondes / 90 secondes / 120 secondes
 quota nb questions de niveau supérieur quand tout bon : 0% / 25% (défaut) / 50% / 75%
@@ -82,12 +83,12 @@ Exemple d'écran (24x40)
 Exemple d'écran (24x40)
 	1234567890123456789012345678901234567890
 	----------------------------------------
- 0				36-15 Builders			C
+ 0				36-15 Builders			        C
  1		LLee  QQCCMM  SSttaarr  WWaarrss
  2	
  3	Résultat : 15 / 15
  4	
- 5					___  __   ___ 
+ 5				        ___  __   ___ 
  6		|\/|  /\  |  |  |__) |__  
  7		|  | /~~\ |  |  |  \ |___ 
  8			      ___  __    

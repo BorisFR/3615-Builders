@@ -1,3 +1,20 @@
+Calcul des points pour effectuer un classement
+
+mauvaise réponse : 0
+bonne réponse :
+	"niveau de la question" * 2 => valeur de 2 à 10 points
+	+ temps de réponse (max 30 secondes) : calcul 6 - (délai / 5) => valeur de 0 (max délai) à 6 (immédiat)
+	= soit de 2 à 16 points par bonne réponse. 
+
+20 bonnes réponses, fonction du temps de réponse 
+niveau 1 : de 40 à 160 points
+niveau 2 : de 80 à 200 points
+niveau 3 : de 120 à 240 points
+niveau 4 : de 160 à 280 points
+niveau 5 : de 200 à 320 points
+
+
+
 
 
 1/ Écran d'accueil Builders / Star Wars

@@ -66,6 +66,10 @@ void Game::prepareOneQuestion()
 	indexReal = index;
 	// on mémorise le fait que l'on ait posé cette question au joueur
 	questionsInGame[currentQuestion] = indexReal;
+
+	// TODO: bosser avec qcmUUID
+	// compter cmbien de fois la question est sortie
+	// et le nombre de bonnes et fausses réponses
 }
 
 void Game::startNewGame(uint8_t level, uint16_t numberQuestions)

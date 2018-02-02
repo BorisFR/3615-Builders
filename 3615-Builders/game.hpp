@@ -49,7 +49,7 @@ class Game
 		uint8_t getNumberOfGoodAnswers();
 		uint8_t getNumberOfBadAnswers();
 		PlayerStatus getPlayerStatus();
-		String getPlayerMoto();
+		String getPlayerMotto();
 
 };
 

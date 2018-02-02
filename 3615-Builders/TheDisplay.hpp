@@ -38,7 +38,7 @@ class TheDisplay
 		void showQuestion(uint8_t number, String category, String question, String answer1, String answer2, String answer3);
 		uint8_t getLevel();
 		uint8_t getAnswer();
-		void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String moto);
+		void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto);
 
 };
 

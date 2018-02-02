@@ -93,7 +93,7 @@ uint8_t TheDisplay::getAnswer()
 	return 0;
 }
 
-void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String moto)
+void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto)
 {
 	// TODO: afficher le résultat
 }

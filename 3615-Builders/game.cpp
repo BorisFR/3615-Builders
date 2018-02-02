@@ -173,7 +173,7 @@ PlayerStatus Game::getPlayerStatus()
 	return Padawan;
 }
 
-String Game::getPlayerMoto()
+String Game::getPlayerMotto()
 {
 	// TODO; 
 	return "Moto";

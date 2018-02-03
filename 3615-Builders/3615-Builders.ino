@@ -198,7 +198,7 @@ void loop()
 		debug("[Display] question");
 #endif
 		// affichage de la question en cours
-		display.showQuestion(game.getCurrentQuestionNumber(), game.getCurrentCategory(), game.getCurrentQuestion(),
+		display.showQuestion(game.getCurrentQuestionNumber(), game.getCurrentQuestionLevel(), game.getCurrentCategory(), game.getCurrentQuestion(),
 							 game.getCurrentAnswer1(), game.getCurrentAnswer2(), game.getCurrentAnswer3());
 		// et on va attendre la réponse du joueur
 		programStatus = WaitForAnswer;
@@ -247,7 +247,9 @@ void loop()
 			}
 			// non ce n'est pas terminé, on affiche la nouvelle question
 			programStatus = DisplayQuestion;
+			break;
 		}
+		display.displayChrono(uint8_t(timeout / 1000));
 		break;
 
 	// le joueur n'a pas répondu

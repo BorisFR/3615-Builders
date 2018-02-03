@@ -276,6 +276,7 @@ public:
   // Contenu
   void attributs(byte attribut); 
   void print(String chaine);
+  void printInBox(String chaine, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color);
   void println(String chaine);
   void println();
   void printChar(char caractere);  // Caractère du jeu G0 exceptés ceux codés 0x60, 0x7B à 0x7F.

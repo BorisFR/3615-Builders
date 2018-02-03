@@ -76,19 +76,13 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageAccueil:
-			minitel.newScreen();
-			minitel.print("Accueil - appuyez sur une touche");
-			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			sendBytes(PAGE_ACCUEIL_SIZE, page_accueil);
 			break;
 		case PageChoixNiveau:
-			minitel.newScreen();
-			minitel.print("Niveau - choisir de 1 à 5");
-			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			sendBytes(PAGE_DIFFICULTE_SIZE, page_difficulte);
 			break;
 		case PageQuestion:
-			minitel.newScreen();
-			minitel.print("Réponse - choisir de 1, 2 ou 3");
-			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			sendBytes(PAGE_QUESTION_SIZE, page_question);
 			break;
 		case PageAbandon:
 			minitel.newScreen();
@@ -96,22 +90,88 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageResultat:
-			minitel.newScreen();
-			minitel.print("Résultat");
-			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 	}
 }
-void TheDisplay::showQuestion(uint8_t number, String category, String question, String answer1, String answer2, String answer3)
+
+void TheDisplay::writeTextOn(String text, uint8_t width)
 {
-	// TODO: afficher la question
-	minitel.println();
-	minitel.println("Question " + String(number) + " / " + String(20));
-	minitel.println("Catégorie : " + category);
-	minitel.println(question);
-	minitel.println("1 : " + answer1);
-	minitel.println("2 : " + answer2);
-	minitel.println("3 : " + answer3);
+	minitel.print(text);
+	// et on efface le restant de la ligne
+	for(uint8_t i = text.length(); i < width; i++)
+		minitel.print(" ");
+}
+
+void TheDisplay::writeTextInBox(String text, uint8_t x, uint8_t y, uint8_t width, uint8_t height)
+{
+	// on efface la zone
+	for(uint8_t j = y; j <= (y + height); j++)
+	{
+		minitel.moveCursorXY(x, j);
+		for (uint8_t i = x; i <= (x + width); i++)
+		{
+			minitel.print(" ");
+		}
+	}
+	// on écrit notre texte
+	minitel.moveCursorXY(x, y);
+	minitel.attributs(CARACTERE_BLANC);
+	minitel.print(text);
+}
+
+void TheDisplay::displayChrono(uint8_t value)
+{
+	if (value == memoChrono)
+		return;
+	memoChrono = value;
+	// chrono (bleu)
+	minitel.moveCursorXY(39, 24);
+	minitel.print(String(30 - value));
+	if(value == 21)
+		minitel.print(" ");
+	// wait
+	minitel.moveCursorXY(17, 24);
+}
+
+void TheDisplay::showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3)
+{
+	// niveau (vert)
+	minitel.moveCursorXY(8, 4);
+	minitel.attributs(CARACTERE_VERT);
+	minitel.print(String(level));
+	// n° question (vert)
+	if (number < 10) {
+		minitel.moveCursorXY(35, 4);
+	}
+	else
+	{
+		minitel.moveCursorXY(34, 4);
+	}
+	minitel.attributs(CARACTERE_VERT);
+	minitel.print("n");
+	minitel.printSpecialChar(DEGRE);
+	minitel.print(String(number) + "/" + String(MAX_QUESTIONS_PER_GAME));
+	// catégorie (bleu sur jaune)
+	minitel.moveCursorXY(12, 6);
+	minitel.attributs(CARACTERE_BLEU);
+	minitel.attributs(FOND_JAUNE);
+	writeTextOn(category, 28);
+	// question
+	//writeTextInBox(question, 3, 8, 36, 10);
+	minitel.printInBox(question, 3, 8, 36, 4, CARACTERE_BLANC);
+	// réponse 1
+	minitel.printInBox(answer1, 4, 15, 36, 3, CARACTERE_BLANC);
+	// réponse 2
+	minitel.printInBox(answer2, 4, 18, 36, 3, CARACTERE_BLANC);
+	// réponse 3
+	minitel.printInBox(answer3, 4, 21, 36, 3, CARACTERE_BLANC);
+	// chrono (bleu)
+	minitel.moveCursorXY(39, 24);
+	minitel.print("30");
+	memoChrono = 30;
+	// wait
+	minitel.moveCursorXY(17, 24);
 }
 
 bool TheDisplay::isKeyPress()

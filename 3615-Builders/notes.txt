@@ -14,6 +14,62 @@ niveau 4 : de 160 à 280 points
 niveau 5 : de 200 à 320 points
 
 
+ATTENTION !
+Changement dans la lib minitel
+  void printInBox(String chaine, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color);
+
+
+dans isDiacritic()
+	String accents = "àâäèéêëîïôöùûüçÀÂÄÈÉÊËÎÏÔÖÙÛÜÇ";
+
+dans printDiacriticChar()
+  String diacritics = "àâäèéêëîïôöùûüçÀÂÄÈÉÊËÎÏÔÖÙÛÜÇ";
+et
+	case (15):
+		car = 'A';
+		break;
+	case (16):
+		car = 'A';
+		break;
+	case (17):
+		car = 'A';
+		break;
+	case (18):
+		car = 'E';
+		break;
+	case (19):
+		car = 'E';
+		break;
+	case (20):
+		car = 'E';
+		break;
+	case (21):
+		car = 'E';
+		break;
+	case (22):
+		car = 'I';
+		break;
+	case (23):
+		car = 'I';
+		break;
+	case (24):
+		car = 'O';
+		break;
+	case (25):
+		car = 'O';
+		break;
+	case (26):
+		car = 'U';
+		break;
+	case (27):
+		car = 'U';
+		break;
+	case (28):
+		car = 'U';
+		break;
+	case (29):
+		car = 'C';
+		break;
 
 
 

@@ -368,6 +368,48 @@ void Minitel::print(String chaine) {
 }
 /*--------------------------------------------------------------------*/
 
+void Minitel::printInBox(String chaine, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color)
+{
+	uint8_t startX = x;
+	uint8_t startY = y;
+	// on efface la zone
+	for (uint8_t j = startY; j < (startY + height); j++)
+	{
+		moveCursorXY(startX, j);
+		for (uint8_t i = startX; i < (startX + width); i++)
+		{
+			printChar(32);
+		}
+	}
+
+	uint8_t currentX = x;
+	uint8_t currentY = y;
+	moveCursorXY(currentX, currentY);
+	attributs(CARACTERE_BLANC);
+	for (int i = 0; i < chaine.length(); i++)
+	{
+		unsigned char caractere = chaine.charAt(i);
+		if (!isDiacritic(caractere))
+		{
+			printChar(caractere);
+		}
+		else
+		{
+			i += 1; // Un caractère accentué prend la place de 2 caractères
+			caractere = chaine.charAt(i);
+			printDiacriticChar(caractere);
+		}
+		currentX++;
+		if (currentX == (x + width))
+		{
+			currentX = x;
+			currentY++;
+			moveCursorXY(currentX, currentY);
+			attributs(CARACTERE_BLANC);
+		}
+	}
+}
+/*--------------------------------------------------------------------*/
 void Minitel::println(String chaine) {
   print(chaine);
   if (currentSize == DOUBLE_HAUTEUR || currentSize == DOUBLE_GRANDEUR) {
@@ -399,7 +441,7 @@ void Minitel::printChar(char caractere) {
 
 void Minitel::printDiacriticChar(unsigned char caractere) {
   writeByte(SS2);  // // Accès au jeu G2 (voir p.103)
-  String diacritics = "àâäèéêëîïôöùûüç";
+  String diacritics = "àâäèéêëîïôöùûüçÀÂÄÈÉÊËÎÏÔÖÙÛÜÇ";
   // Dans une chaine de caractères, un caractère diacritique prend la
   // place de 2 caractères simples, ce qui explique le /2.
   int index = (diacritics.indexOf(caractere)-1)/2;
@@ -420,8 +462,53 @@ void Minitel::printDiacriticChar(unsigned char caractere) {
     case(12): car = 'u'; writeByte(ACCENT_CIRCONFLEXE); break;      
     case(13): car = 'u'; writeByte(TREMA); break;
     case(14): car = 'c'; writeByte(CEDILLE); break;
-  }
-  printChar(car);
+	case (15):
+		car = 'A';
+		break;
+	case (16):
+		car = 'A';
+		break;
+	case (17):
+		car = 'A';
+		break;
+	case (18):
+		car = 'E';
+		break;
+	case (19):
+		car = 'E';
+		break;
+	case (20):
+		car = 'E';
+		break;
+	case (21):
+		car = 'E';
+		break;
+	case (22):
+		car = 'I';
+		break;
+	case (23):
+		car = 'I';
+		break;
+	case (24):
+		car = 'O';
+		break;
+	case (25):
+		car = 'O';
+		break;
+	case (26):
+		car = 'U';
+		break;
+	case (27):
+		car = 'U';
+		break;
+	case (28):
+		car = 'U';
+		break;
+	case (29):
+		car = 'C';
+		break;
+	}
+	printChar(car);
 }
 /*--------------------------------------------------------------------*/
 
@@ -655,10 +742,11 @@ boolean Minitel::isValidChar(byte index) {
 /*--------------------------------------------------------------------*/
 
 boolean Minitel::isDiacritic(unsigned char caractere) {
-  String accents = "àâäèéêëîïôöùûüç";
-  if (accents.indexOf(caractere) >= 0) {
-    return true; 
-  }
+	String accents = "àâäèéêëîïôöùûüçÀÂÄÈÉÊËÎÏÔÖÙÛÜÇ";
+	if (accents.indexOf(caractere) >= 0)
+	{
+		return true; 
+  	}
   return false;
 }
 /*--------------------------------------------------------------------*/

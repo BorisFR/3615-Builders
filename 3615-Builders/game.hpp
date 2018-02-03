@@ -38,6 +38,7 @@ class Game
 		void nextQuestion();
 		bool isGameFinish();
 		uint8_t getCurrentQuestionNumber();
+		uint8_t getCurrentQuestionLevel();
 		String getCurrentQuestion();
 		String getCurrentCategory();
 		String getCurrentAnswer1();

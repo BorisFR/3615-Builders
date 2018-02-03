@@ -125,6 +125,11 @@ uint8_t Game::getCurrentQuestionNumber()
 	return currentQuestion + 1;
 }
 
+uint8_t Game::getCurrentQuestionLevel()
+{
+	return currentLevel;
+}
+
 String Game::getCurrentQuestion()
 {
 	return qcmQuestions[indexReal];

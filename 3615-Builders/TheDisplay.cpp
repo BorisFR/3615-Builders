@@ -129,11 +129,11 @@ void TheDisplay::writeTextInBox(String chaine, uint8_t x, uint8_t y, uint8_t wid
 	// compteur du reste à écrire
 	uint8_t lengthToPut = text.length();
 	// position de ce qui reste à écrire
-	Serial.println();
+	//Serial.println();
 	while (lengthToPut > 0)
 	{
 		uint8_t currentPosText = 0;
-		Serial.println("Pos:" + String(currentPosText) + " Restant: " + String(lengthToPut) + " à mettre: " + String(width) + " =>*" + text + "*");
+		//Serial.println("Pos:" + String(currentPosText) + " Restant: " + String(lengthToPut) + " à mettre: " + String(width) + " =>*" + text + "*");
 		// on calcule ce qu'il faut écrire
 		int8_t lengthToGet = width; // 9
 		// si c'est trop, on prend vraiment que le reste à
@@ -141,27 +141,25 @@ void TheDisplay::writeTextInBox(String chaine, uint8_t x, uint8_t y, uint8_t wid
 			lengthToGet = lengthToPut;
 		// on extrait la chaine à écrire
 		String temp = text.substring(currentPosText, currentPosText + lengthToGet);
-		Serial.print("chaine=*" + temp + "*");
+		//Serial.print("chaine=*" + temp + "*");
 		// coupe-t'on un mot ?
-		bool coupe = false;
 		if ((currentPosText + lengthToGet) < lengthToPut)
 		{ // plus rien après
 			// si dernier char ou prochain char n'est pas espace
 			int8_t lastPos = temp.lastIndexOf(' ');
-			Serial.print(" last:" + String(lastPos) + " toget:" + String(lengthToGet));
+			//Serial.print(" last:" + String(lastPos) + " toget:" + String(lengthToGet));
 			if ((lastPos + 1) != lengthToGet) // dernier n'est pas ' '
 			{
-				Serial.print(" =*" + text.substring(lengthToGet, lengthToGet + 1) + "*");
+				//Serial.print(" =*" + text.substring(lengthToGet, lengthToGet + 1) + "*");
 				if (text.substring(lengthToGet, lengthToGet + 1) != ' ') // prochaine n'est pas ' '
 				{
-					Serial.print(" *");
-					coupe = true;
+					//Serial.print(" *");
 					lengthToGet = lastPos;
 					temp = text.substring(currentPosText, currentPosText + lengthToGet);
 				}
 			}
 		}
-		Serial.println(" Ecrit: " + String(lengthToGet) + " =>*" + temp + "*");
+		//Serial.println(" Ecrit: " + String(lengthToGet) + " =>*" + temp + "*");
 		minitel.moveCursorXY(x, currentY++);
 		minitel.attributs(CARACTERE_BLANC);
 		minitel.print(temp.trim());
@@ -175,6 +173,7 @@ void TheDisplay::displayChrono(uint8_t value)
 {
 	if (value == memoChrono)
 		return;
+	minitel.noCursor();
 	memoChrono = value;
 	// chrono (bleu)
 	minitel.moveCursorXY(39, 24);
@@ -183,10 +182,12 @@ void TheDisplay::displayChrono(uint8_t value)
 		minitel.print(" ");
 	// wait
 	minitel.moveCursorXY(17, 24);
+	minitel.cursor();
 }
 
 void TheDisplay::showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3)
 {
+	minitel.noCursor();
 	// niveau (vert)
 	minitel.moveCursorXY(8, 4);
 	minitel.attributs(CARACTERE_VERT);
@@ -223,6 +224,7 @@ void TheDisplay::showQuestion(uint8_t number, uint8_t level, String category, St
 	memoChrono = 30;
 	// wait
 	minitel.moveCursorXY(17, 24);
+	minitel.cursor();
 }
 
 bool TheDisplay::isKeyPress()

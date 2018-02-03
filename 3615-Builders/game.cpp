@@ -20,6 +20,9 @@ void Game::parseQCM()
 
 	for(uint16_t i = 0; i < NUMBER_QCM_QUESTIONS; i++)
 	{
+		// question n° i
+		// niveau = qcmLevel[i] (de 1 à 5)
+		// n° de question pour le niveau = numberQuestionsByLevel[ qcmLevel[i] ]
 		// on mémorise la question pour chacun des niveaux
 		questionByLevel[ qcmLevel[i] ][ numberQuestionsByLevel[qcmLevel[i]] ] = i;
 		// on compte le nombre de questions par niveaux
@@ -56,14 +59,15 @@ void Game::prepareOneQuestion()
 
 	// on choisit une question au hazard
 	uint16_t index = random(numberQuestionsByLevel[currentLevel]);
+	indexReal = questionByLevel[currentLevel][index];
 	// si la question a déjà été posée
-	while(isAlreadyAsk(index))
+	while (isAlreadyAsk(indexReal))
 	{
 		// on en choisit une autre
 		index = random(numberQuestionsByLevel[currentLevel]);
+		indexReal = questionByLevel[currentLevel][index];
 	}
 	// la question est choisie
-	indexReal = index;
 	// on mémorise le fait que l'on ait posé cette question au joueur
 	questionsInGame[currentQuestion] = indexReal;
 

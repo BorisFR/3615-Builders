@@ -236,6 +236,14 @@ void loop()
 		{
 			// on joue sa réponse
 			game.playAnswer(playerAnswer);
+			#ifdef DEBUG
+			if(game.isAnswerGood())
+			{
+				debug("Good answer");
+			} else {
+				debug("False answer");
+			}
+			#endif
 			// on passe à la question suivante
 			game.nextQuestion();
 			// est-ce la fin du jeu ?

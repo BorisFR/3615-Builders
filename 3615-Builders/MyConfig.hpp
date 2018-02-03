@@ -17,17 +17,28 @@
 
 // normalement, pas besoin de toucher en dessous
 
+#define CATEGORY_CINEMA "Cinéma"
+#define CATEGORY_DROIDE "Cinéma"
+#define CATEGORY_KNOWLEDGE "Connaissance"
+#define CATEGORY_HISTORY "Histoire"
+
 enum PlayerStatus
 {
+	Human,
 	Sensitif,
+	Initie,
 	Padawan,
 	Chevalier,
-	Maitre,
 	GrandMaitre
 };
 
 // combien de questions pour une session de jeu
 #define MAX_QUESTIONS_PER_GAME 20
+
+// combien de bonnes réponses successives pour passer au niveau supérieur
+#define GOOD_ANSWER_TO_LEVEL_UP 3
+
+#define BAD_ANSWER_TO_LEVEL_DOWN 2
 
 // temps limite pour répondre
 #define SECONDS_TO_ANSWER 30 * 1000

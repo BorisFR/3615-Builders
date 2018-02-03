@@ -46,15 +46,22 @@ void Game::prepareOneQuestion()
 {
 	// si le joueur enchaîne les bonnes réponses
 	// on passe au niveau supérieur
-	if(countSuccessiveGood > 4 && currentLevel < NUMBER_QCM_LEVEL)
+	if (countSuccessiveGood >= GOOD_ANSWER_TO_LEVEL_UP && currentLevel < NUMBER_QCM_LEVEL)
 	{
 		currentLevel++;
+		countSuccessiveGood = 0;
+		#ifdef DEBUG
+			Serial.println("** Next level");
+		#endif
 	}
 	// au contraire, si le joueur enchaîne les mauvaises réponses
 	// alors on baisse le niveau
-	if(countSuccessiveBad > 1 && currentLevel > 1)
+	if (countSuccessiveBad >= BAD_ANSWER_TO_LEVEL_DOWN && currentLevel > 1)
 	{
 		currentLevel--;
+#ifdef DEBUG
+		Serial.println("** Previous level");
+#endif
 	}
 
 	// on choisit une question au hazard
@@ -70,10 +77,31 @@ void Game::prepareOneQuestion()
 	// la question est choisie
 	// on mémorise le fait que l'on ait posé cette question au joueur
 	questionsInGame[currentQuestion] = indexReal;
+	switch(random(3))
+	{
+		case 0:
+			currentGoodAnswer = 1;
+			answer1 = qcmAnswers[indexReal];
+			answer2 = qcmFalse1[indexReal];
+			answer3 = qcmFalse2[indexReal];
+			break;
+		case 1:
+			currentGoodAnswer = 2;
+			answer2 = qcmAnswers[indexReal];
+			answer1 = qcmFalse1[indexReal];
+			answer3 = qcmFalse2[indexReal];
+			break;
+		case 2:
+			currentGoodAnswer = 3;
+			answer3 = qcmAnswers[indexReal];
+			answer1 = qcmFalse1[indexReal];
+			answer2 = qcmFalse2[indexReal];
+			break;
+		}
 
-	// TODO: bosser avec qcmUUID
-	// compter cmbien de fois la question est sortie
-	// et le nombre de bonnes et fausses réponses
+		// TODO: bosser avec qcmUUID
+		// compter cmbien de fois la question est sortie
+		// et le nombre de bonnes et fausses réponses
 }
 
 void Game::startNewGame(uint8_t level, uint16_t numberQuestions)
@@ -114,14 +142,23 @@ bool Game::isGameFinish()
 
 void Game::playAnswer(uint8_t answer)
 {
-	// TODO:
-	badAnswers++;
+	if (answer == currentGoodAnswer)
+	{
+		goodAnswers++;
+		giveGoodAnswer = true;
+		countSuccessiveGood++;
+		countSuccessiveBad = 0;
+	} else {
+		badAnswers++;
+		giveGoodAnswer = false;
+		countSuccessiveBad++;
+		countSuccessiveGood = 0;
+	}
 }
 
 bool Game::isAnswerGood()
 {
-	// TODO: 
-	return false;
+	return giveGoodAnswer;
 }
 
 uint8_t Game::getCurrentQuestionNumber()
@@ -143,27 +180,27 @@ String Game::getCurrentCategory()
 {
 	switch(qcmCategories[indexReal])
 	{
-		case 0: return "Cinéma";
-		case 1: return "Connaissance";
-		case 2: return "Droïde";
-		case 3: return "Histoire";
+		case 0: return CATEGORY_CINEMA;
+		case 1: return CATEGORY_KNOWLEDGE;
+		case 2: return CATEGORY_DROIDE;
+		case 3: return CATEGORY_HISTORY;
 	}
 	return String(qcmCategories[indexReal]);
 }
 
 String Game::getCurrentAnswer1()
 {
-	return qcmAnswers[indexReal];
+	return answer1;
 }
 
 String Game::getCurrentAnswer2()
 {
-	return qcmFalse1[indexReal];
+	return answer2;
 }
 
 String Game::getCurrentAnswer3()
 {
-	return qcmFalse2[indexReal];
+	return answer3;
 }
 
 uint8_t Game::getNumberOfGoodAnswers()
@@ -178,12 +215,30 @@ uint8_t Game::getNumberOfBadAnswers()
 
 PlayerStatus Game::getPlayerStatus()
 {
-	// TODO; 
-	return Padawan;
+	if (goodAnswers == 0)
+		return Human;
+	if (goodAnswers < 6)
+		return Sensitif;
+	if (goodAnswers < 11)
+		return Initie;
+	if (goodAnswers < 15)
+		return Padawan;
+	if (goodAnswers < 19)
+		return Chevalier;
+	return GrandMaitre;
 }
 
 String Game::getPlayerMotto()
 {
-	// TODO; 
-	return "Moto";
+	if (goodAnswers == 0)
+		return "Star Wars, ça vous cause ?";
+	if (goodAnswers < 6)
+		return "Vous êtes sensible à la Force, continuez votre découverte.";
+	if (goodAnswers < 11)
+		return "La Force est en vous, découvrez vos possibilités.";
+	if (goodAnswers < 15)
+		return "La Force vous guide, approfondissez vos connaissances.";
+	if (goodAnswers < 19)
+		return "Votre sagesse vous honore, partagez votre savoir.";
+	return "Votre maîtrise de la Force est exemplaire !";
 }

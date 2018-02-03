@@ -17,6 +17,11 @@ class Game
 		uint8_t currentLevel;
 		uint16_t currentMaxQuestions;
 		uint8_t currentQuestion;
+		uint8_t currentGoodAnswer;
+		bool giveGoodAnswer;
+		String answer1;
+		String answer2;
+		String answer3;
 		int16_t questionsInGame[MAX_QUESTIONS_PER_GAME];
 		uint16_t indexReal;
 		uint8_t countSuccessiveGood;

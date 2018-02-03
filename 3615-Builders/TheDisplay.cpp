@@ -40,19 +40,16 @@ bool TheDisplay::isTextKey(unsigned long key)
 
 void TheDisplay::loop()
 {
-	if (minitelTimeLastCommand > MINITEL_SCREEN_TIMEOUT)
+/*	if (minitelTimeLastCommand > MINITEL_SCREEN_TIMEOUT)
 	{
 		minitel.moveCursorXY(0, 0);
-		//minitel.moveCursorTo(0, 0);
 		Serial.println(F("Ping minitel"));
 		minitelTimeLastCommand = 0;
-	}
+	}*/
 	lastKey = minitel.getKeyCode();
-	//minitel.readKey();
-	if (isTextKey(lastKey)) //(minitel.isCharacterKey())
+	if (isTextKey(lastKey))
 	{
 		keyIsPressed = true;
-		//process();
 	}
 }
 
@@ -236,7 +233,19 @@ bool TheDisplay::isKeyPress()
 
 bool TheDisplay::isCancel()
 {
-	// TODO: test si la touche annulation a été pressée
+	if (
+		(lastKey == CONNEXION_FIN) ||
+		(lastKey == SOMMAIRE) ||
+		(lastKey == ANNULATION) ||
+		(lastKey == RETOUR) ||
+		(lastKey == REPETITION) ||
+		(lastKey == GUIDE) ||
+		(lastKey == CORRECTION) ||
+		(lastKey == SUITE) ||
+		(lastKey == ENVOI))
+	{
+		return true;
+	}
 	return false;
 }
 
@@ -264,7 +273,61 @@ uint8_t TheDisplay::getAnswer()
 
 void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto)
 {
-	minitel.println();
-	minitel.println("Résultat " + String(goodAnswers) + " / " + String(badAnswers));
-	minitel.println(motto);
+	//minitel.attributs(FOND_JAUNE);
+	minitel.moveCursorXY(15, 5);
+	minitel.attributs(CARACTERE_BLEU);
+	if (goodAnswers == 0)
+		minitel.print("aucune bonne réponse");
+	if (goodAnswers == 1)
+		minitel.print("1 bonne réponse / " + String(MAX_QUESTIONS_PER_GAME));
+	if ((goodAnswers > 1) && (goodAnswers < MAX_QUESTIONS_PER_GAME))
+		minitel.print(String(goodAnswers) + " bonnes réponses / " + String(MAX_QUESTIONS_PER_GAME));
+	if (goodAnswers == MAX_QUESTIONS_PER_GAME)
+		minitel.print("toutes les réponses bonnes !");
+
+	if (badAnswers == 0) {
+		minitel.moveCursorXY(27, 7);
+		minitel.attributs(CARACTERE_BLEU);
+		minitel.println("aucune erreur !");
+	}
+	if (badAnswers == 1) {
+		minitel.moveCursorXY(27, 7);
+		minitel.attributs(CARACTERE_BLEU);
+		minitel.println("soit " + String(badAnswers) + " erreur");
+	}
+	if ((badAnswers > 0) && (badAnswers < 10)) {
+		minitel.moveCursorXY(26, 7);
+		minitel.attributs(CARACTERE_BLEU);
+		minitel.println("soit " + String(badAnswers) + " erreurs");
+	}
+	if ((badAnswers > 9) && (badAnswers < MAX_QUESTIONS_PER_GAME))
+	{
+		minitel.moveCursorXY(25, 7);
+		minitel.attributs(CARACTERE_BLEU);
+		minitel.println("soit " + String(badAnswers) + " erreurs");
+	}
+	if (badAnswers == MAX_QUESTIONS_PER_GAME)
+	{
+		minitel.moveCursorXY(31, 7);
+		minitel.attributs(CARACTERE_BLEU);
+		minitel.println("tout faux");
+	}
+
+	writeTextInBox(motto, 1, 12, 18, 3, CARACTERE_BLANC);
+
+// TODO: show big text
+	switch(status) {
+		case Human:
+			break;
+		case Sensitif:
+			break;
+		case Initie:
+			break;
+		case Padawan:
+			break;
+		case Chevalier:
+			break;
+		case GrandMaitre:
+			break;
+		}
 }

@@ -368,48 +368,6 @@ void Minitel::print(String chaine) {
 }
 /*--------------------------------------------------------------------*/
 
-void Minitel::printInBox(String chaine, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color)
-{
-	uint8_t startX = x;
-	uint8_t startY = y;
-	// on efface la zone
-	for (uint8_t j = startY; j < (startY + height); j++)
-	{
-		moveCursorXY(startX, j);
-		for (uint8_t i = startX; i < (startX + width); i++)
-		{
-			printChar(32);
-		}
-	}
-
-	uint8_t currentX = x;
-	uint8_t currentY = y;
-	moveCursorXY(currentX, currentY);
-	attributs(CARACTERE_BLANC);
-	for (int i = 0; i < chaine.length(); i++)
-	{
-		unsigned char caractere = chaine.charAt(i);
-		if (!isDiacritic(caractere))
-		{
-			printChar(caractere);
-		}
-		else
-		{
-			i += 1; // Un caractère accentué prend la place de 2 caractères
-			caractere = chaine.charAt(i);
-			printDiacriticChar(caractere);
-		}
-		currentX++;
-		if (currentX == (x + width))
-		{
-			currentX = x;
-			currentY++;
-			moveCursorXY(currentX, currentY);
-			attributs(CARACTERE_BLANC);
-		}
-	}
-}
-/*--------------------------------------------------------------------*/
 void Minitel::println(String chaine) {
   print(chaine);
   if (currentSize == DOUBLE_HAUTEUR || currentSize == DOUBLE_GRANDEUR) {

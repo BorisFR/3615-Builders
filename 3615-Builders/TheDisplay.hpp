@@ -35,7 +35,7 @@ class TheDisplay
 		unsigned long lastKey;
 		uint8_t getNumericInputNumber(uint8_t from, uint8_t to);
 		void writeTextOn(String text, uint8_t width);
-		void writeTextInBox(String text, uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+		void writeTextInBox(String text, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color);
 		uint8_t memoChrono;
 
 	public:

@@ -1,27 +1,55 @@
 #include "TheDisplay.hpp"
 
-Minitel minitel(PIN_MINITEL_SERIAL_TX, PIN_MINITEL_SERIAL_RX);
+//Minitel minitel(PIN_MINITEL_SERIAL_TX, PIN_MINITEL_SERIAL_RX);
+Minitel minitel(SERIAL_MINITEL);
 
 void TheDisplay::setup()
 {
-	minitel.clearScreen();
+	int speed = minitel.searchSpeed();
+	Serial.println(speed);
+	minitel.newScreen();
+	minitel.smallMode();
+	minitel.print("Hello world!");
+
+	/*minitel.clearScreen();
 	minitel.graphicMode();
 	minitel.noPixelate();
-	minitel.textMode();
+	minitel.textMode();*/
 	minitelTimeLastCommand = 0;
 	keyIsPressed = false;
+	lastKey = 0;
+}
+
+bool TheDisplay::isTextKey(unsigned long key)
+{
+	if ((key != 0) &&
+		(key != CONNEXION_FIN) &&
+		(key != SOMMAIRE) &&
+		(key != ANNULATION) &&
+		(key != RETOUR) &&
+		(key != REPETITION) &&
+		(key != GUIDE) &&
+		(key != CORRECTION) &&
+		(key != SUITE) &&
+		(key != ENVOI))
+	{
+		return true;
+	}
+	return false;
 }
 
 void TheDisplay::loop()
 {
 	if (minitelTimeLastCommand > MINITEL_SCREEN_TIMEOUT)
 	{
-		minitel.moveCursorTo(0, 0);
+		minitel.moveCursorXY(0, 0);
+		//minitel.moveCursorTo(0, 0);
 		Serial.println(F("Ping minitel"));
 		minitelTimeLastCommand = 0;
 	}
-	minitel.readKey();
-	if (minitel.isCharacterKey())
+	lastKey = minitel.getKeyCode();
+	//minitel.readKey();
+	if (isTextKey(lastKey)) //(minitel.isCharacterKey())
 	{
 		keyIsPressed = true;
 		//process();
@@ -33,7 +61,8 @@ void TheDisplay::sendBytes(uint16_t size, const uint8_t bytes[])
 	for (uint16_t i = 0; i < size; i++)
 	{
 		uint8_t c = bytes[i];
-		minitel.textByte(c);
+		minitel.writeByte(c);
+		//minitel.textByte(c);
 	}
 	minitelTimeLastCommand = 0;
 }
@@ -47,25 +76,42 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageAccueil:
-			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			minitel.newScreen();
+			minitel.print("Accueil - appuyez sur une touche");
+			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageChoixNiveau:
-			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			minitel.newScreen();
+			minitel.print("Niveau - choisir de 1 à 5");
+			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageQuestion:
-			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			minitel.newScreen();
+			minitel.print("Réponse - choisir de 1, 2 ou 3");
+			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageAbandon:
-			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			minitel.newScreen();
+			minitel.print("Abandon");
+			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 		case PageResultat:
-			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			minitel.newScreen();
+			minitel.print("Résultat");
+			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
 	}
 }
 void TheDisplay::showQuestion(uint8_t number, String category, String question, String answer1, String answer2, String answer3)
 {
 	// TODO: afficher la question
+	minitel.println();
+	minitel.println("Question " + String(number) + " / " + String(20));
+	minitel.println("Catégorie : " + category);
+	minitel.println(question);
+	minitel.println("1 : " + answer1);
+	minitel.println("2 : " + answer2);
+	minitel.println("3 : " + answer3);
 }
 
 bool TheDisplay::isKeyPress()
@@ -81,19 +127,31 @@ bool TheDisplay::isCancel()
 	return false;
 }
 
+uint8_t TheDisplay::getNumericInputNumber(uint8_t from, uint8_t to)
+{
+	if ((lastKey >= (uint8_t)(from + 48)) && (lastKey <= (uint8_t)(to + 48)))
+	{
+		uint8_t value = lastKey - 48;
+		lastKey = 0;
+		keyIsPressed = false;
+		return value;
+	}
+	return 0;
+}
+
 uint8_t TheDisplay::getLevel()
 {
-	// TODO: renvoyer de 1 à 5 si le joueur a choisit
-	return 0;
+	return getNumericInputNumber(1, 5); //NUMBER_QCM_LEVEL);
 }
 
 uint8_t TheDisplay::getAnswer()
 {
-	// TODO: renvoyer 1, 2 ou 3 si le joueur a choisit
-	return 0;
+	return getNumericInputNumber(1, 3);
 }
 
 void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto)
 {
-	// TODO: afficher le résultat
+	minitel.println();
+	minitel.println("Résultat " + String(goodAnswers) + " / " + String(badAnswers));
+	minitel.println(motto);
 }

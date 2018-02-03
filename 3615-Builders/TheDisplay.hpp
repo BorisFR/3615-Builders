@@ -6,8 +6,9 @@
 #include <SoftwareSerial.h>
 #include "ElapsedMillis.hpp"
 #include "MyConfig.hpp"
-#include "Minitel.h"
+#include "Minitel1B_Hard.h"
 #include "page_resultat.hpp"
+//#include "qcm.hpp"
 
 #define MINITEL_SCREEN_TIMEOUT ((4 * 60 * 1000) - (5 * 1000)) // 4 minutes - 5 secondes
 
@@ -27,6 +28,9 @@ class TheDisplay
 		void sendBytes(uint16_t size, const uint8_t bytes[]);
 		ElapsedMillis minitelTimeLastCommand;
 		bool keyIsPressed;
+		bool isTextKey(unsigned long);
+		unsigned long lastKey;
+		uint8_t getNumericInputNumber(uint8_t from, uint8_t to);
 
 	public:
 		void setup();

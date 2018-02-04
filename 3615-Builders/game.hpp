@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include "Qcm.hpp"
 #include "MyConfig.hpp"
+#include "ElapsedMillis.hpp"
 
 // int16 => max 32000 questions
 // uint8 => max 255 questions per game
@@ -29,6 +30,8 @@ class Game
 
 		uint8_t goodAnswers;
 		uint8_t badAnswers;
+		uint16_t points;
+		ElapsedMillis timeToAnswer;
 
 		uint16_t numberQuestionsByLevel[NUMBER_QCM_LEVEL];
 		uint16_t questionByLevel[NUMBER_QCM_LEVEL][MAX_QUESTIONS_BY_LEVEL];
@@ -56,6 +59,7 @@ class Game
 		uint8_t getNumberOfBadAnswers();
 		PlayerStatus getPlayerStatus();
 		String getPlayerMotto();
+		uint16_t getPoints();
 
 };
 

@@ -290,7 +290,7 @@ void loop()
 		// et on affiche le résultat du joueur
 		display.showResult(game.getNumberOfGoodAnswers(), 
 			game.getNumberOfBadAnswers(), game.getPlayerStatus(), 
-			game.getPlayerMotto());
+			game.getPlayerMotto(), game.getPoints());
 		programStatus = WaitForEnding;
 		timeout = 0;
 		break;
@@ -305,9 +305,14 @@ void loop()
 			programStatus = DisplayWelcome;
 			break;
 		}
-		if (display.isKeyPress())
+		if (display.isCancel())
 		{
 			programStatus = DisplayWelcome;
+			break;
+		}
+		if (display.isKeyPress())
+		{
+			timeout = 0;
 			break;
 		}
 		break;

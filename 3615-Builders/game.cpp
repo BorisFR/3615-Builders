@@ -97,7 +97,9 @@ void Game::prepareOneQuestion()
 			answer1 = qcmFalse1[indexReal];
 			answer2 = qcmFalse2[indexReal];
 			break;
-		}
+	}
+
+	timeToAnswer = 0;
 
 		// TODO: bosser avec qcmUUID
 		// compter cmbien de fois la question est sortie
@@ -118,6 +120,7 @@ void Game::startNewGame(uint8_t level, uint16_t numberQuestions)
 	countSuccessiveBad = 0;
 	goodAnswers = 0;
 	badAnswers = 0;
+	points = 0;
 	prepareOneQuestion();
 }
 
@@ -142,12 +145,15 @@ bool Game::isGameFinish()
 
 void Game::playAnswer(uint8_t answer)
 {
+	unsigned long delay = millis() - timeToAnswer;
+
 	if (answer == currentGoodAnswer)
 	{
 		goodAnswers++;
 		giveGoodAnswer = true;
 		countSuccessiveGood++;
 		countSuccessiveBad = 0;
+		points += (2 * currentLevel) + (6 - ((delay / 1000) / 5));
 	} else {
 		badAnswers++;
 		giveGoodAnswer = false;
@@ -241,4 +247,9 @@ String Game::getPlayerMotto()
 	if (goodAnswers < 19)
 		return CHEVALIER_MOTTO;
 	return MASTER_MOTTO;
+}
+
+uint16_t Game::getPoints()
+{
+	return points;
 }

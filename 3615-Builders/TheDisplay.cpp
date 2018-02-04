@@ -386,7 +386,7 @@ uint8_t TheDisplay::getAnswer()
 	return getNumericInputNumber(1, 3);
 }
 
-void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto)
+void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points)
 {
 	//minitel.attributs(FOND_JAUNE);
 	minitel.moveCursorXY(17, 5);
@@ -486,4 +486,17 @@ void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatu
 			//writeCenter("|  | /~~\\ |  |  |  \\ |___", 10, CARACTERE_BLANC, false);
 			break;
 		}
+
+		uint8_t x = 29;
+		if(points < 100)
+			x++;
+		if(points < 10)
+			x++;
+		minitel.moveCursorXY(x, 15);
+		minitel.attributs(CARACTERE_VERT);
+		minitel.attributs(CLIGNOTEMENT);
+		minitel.print(String(points));
+		minitel.attributs(FIXE);
+		minitel.print(" points");
+
 }

@@ -66,7 +66,7 @@ class TheDisplay
 		bool displayChrono(uint8_t value);
 		uint8_t getLevel();
 		uint8_t getAnswer();
-		void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto);
+		void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
 		String getInputValue();
 		bool isInputReady();
 

@@ -273,7 +273,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			writeTextInBox("Pour effectuez le classement et peut-être gagner un lot, nous avons besoin d'un pseudonyme afin de vous identifier.", 2, 8, 36, 4, CARACTERE_BLANC);
 			minitel.moveCursorXY(2, 13);
 			minitel.attributs(CARACTERE_BLANC);
-			minitel.print("Votre pseudo : ..............");
+			minitel.print("Votre pseudo : .............");
 
 			writeTextInBox("Pour corrigez, appuyez sur la touche 'CORRECTION'. Une fois terminé votre saisie, appuyez sur la touche verte 'ENVOI'.", 2, 15, 36, 4, CARACTERE_VERT);
 
@@ -286,7 +286,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			posY = 13;
 			minitel.moveCursorXY(posX, posY);
 			minitel.cursor();
-			startInput(14);
+			startInput(13);
 			break;
 	}
 	//minitelTimeLastCommand = 0;

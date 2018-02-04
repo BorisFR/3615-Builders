@@ -487,7 +487,7 @@ void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatu
 			break;
 		}
 
-		uint8_t x = 29;
+		uint8_t x = 30;
 		if(points < 100)
 			x++;
 		if(points < 10)

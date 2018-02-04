@@ -24,9 +24,9 @@ void Game::parseQCM()
 		// niveau = qcmLevel[i] (de 1 à 5)
 		// n° de question pour le niveau = numberQuestionsByLevel[ qcmLevel[i] ]
 		// on mémorise la question pour chacun des niveaux
-		questionByLevel[ qcmLevel[i] ][ numberQuestionsByLevel[qcmLevel[i]] ] = i;
+		questionByLevel[ qcmLevel[i] - 1 ][ numberQuestionsByLevel[qcmLevel[i] - 1] ] = i;
 		// on compte le nombre de questions par niveaux
-		numberQuestionsByLevel[ qcmLevel[i] ]++;
+		numberQuestionsByLevel[ qcmLevel[i] - 1 ]++;
 	}
 }
 
@@ -44,6 +44,7 @@ bool Game::isAlreadyAsk(uint16_t indexQuestion)
 
 void Game::prepareOneQuestion()
 {
+	Serial.println("Tirage aléatoire d'une question");
 	// si le joueur enchaîne les bonnes réponses
 	// on passe au niveau supérieur
 	if (countSuccessiveGood >= GOOD_ANSWER_TO_LEVEL_UP && currentLevel < NUMBER_QCM_LEVEL)
@@ -63,35 +64,61 @@ void Game::prepareOneQuestion()
 		Serial.println("** Previous level");
 #endif
 	}
-
+#ifdef DEBUG
+	Serial.println("Level: " + String(currentLevel) + " => Number of questions: " + String(numberQuestionsByLevel[currentLevel - 1]));
+#endif
 	// on choisit une question au hazard
-	uint16_t index = random(numberQuestionsByLevel[currentLevel]);
-	indexReal = questionByLevel[currentLevel][index];
+	uint16_t index = random(numberQuestionsByLevel[currentLevel - 1]);
+#ifdef DEBUG
+	Serial.print("Trying " + String(index));
+#endif
+	indexReal = questionByLevel[currentLevel - 1][index];
+#ifdef DEBUG
+	Serial.print("[" + String(indexReal) + "] ");
+#endif
 	// si la question a déjà été posée
 	while (isAlreadyAsk(indexReal))
 	{
 		// on en choisit une autre
-		index = random(numberQuestionsByLevel[currentLevel]);
-		indexReal = questionByLevel[currentLevel][index];
+		index = random(numberQuestionsByLevel[currentLevel - 1]);
+#ifdef DEBUG
+		Serial.print("=> " + String(index));
+#endif
+		indexReal = questionByLevel[currentLevel - 1][index];
+#ifdef DEBUG
+		Serial.print("[" + String(indexReal) + "] ");
+#endif
 	}
+#ifdef DEBUG
+	Serial.println("OK");
+#endif
 	// la question est choisie
 	// on mémorise le fait que l'on ait posé cette question au joueur
 	questionsInGame[currentQuestion] = indexReal;
 	switch(random(3))
 	{
 		case 0:
+#ifdef DEBUG
+			Serial.println("Shuffle answer case 0");
+#endif
 			currentGoodAnswer = 1;
 			answer1 = qcmAnswers[indexReal];
 			answer2 = qcmFalse1[indexReal];
 			answer3 = qcmFalse2[indexReal];
 			break;
 		case 1:
+#ifdef DEBUG
+			Serial.println("Shuffle answer case 1");
+#endif
 			currentGoodAnswer = 2;
 			answer2 = qcmAnswers[indexReal];
 			answer1 = qcmFalse1[indexReal];
 			answer3 = qcmFalse2[indexReal];
 			break;
 		case 2:
+#ifdef DEBUG
+			Serial.println("Shuffle answer case 2");
+#endif
 			currentGoodAnswer = 3;
 			answer3 = qcmAnswers[indexReal];
 			answer1 = qcmFalse1[indexReal];
@@ -108,6 +135,9 @@ void Game::prepareOneQuestion()
 
 void Game::startNewGame(uint8_t level, uint16_t numberQuestions)
 {
+#ifdef DEBUG
+	Serial.println("Starting new game");
+#endif
 	startLevel = level;
 	currentLevel = level;
 	currentMaxQuestions = numberQuestions;
@@ -145,7 +175,7 @@ bool Game::isGameFinish()
 
 void Game::playAnswer(uint8_t answer)
 {
-	unsigned long delay = millis() - timeToAnswer;
+	unsigned long delay = timeToAnswer;
 
 	if (answer == currentGoodAnswer)
 	{
@@ -153,8 +183,17 @@ void Game::playAnswer(uint8_t answer)
 		giveGoodAnswer = true;
 		countSuccessiveGood++;
 		countSuccessiveBad = 0;
-		points += (2 * currentLevel) + (6 - ((delay / 1000) / 5));
-	} else {
+		unsigned long ptsDelay = 6 - ((delay / 1000) / 5);
+#ifdef DEBUG
+		Serial.print("** Current score:" + String(points) + " => delay:" + String(delay) + "=" + String(ptsDelay));
+#endif
+		points += (2 * currentLevel) + ptsDelay;
+#ifdef DEBUG
+		Serial.println("** New score:" + String(points));
+#endif
+	}
+	else
+	{
 		badAnswers++;
 		giveGoodAnswer = false;
 		countSuccessiveBad++;

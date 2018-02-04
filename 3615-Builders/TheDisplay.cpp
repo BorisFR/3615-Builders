@@ -13,6 +13,32 @@ void TheDisplay::setup()
 	isInInputTextMode = false;
 	keyIsPressed = false;
 	lastKey = 0;
+	for (uint8_t i = 0; i < MAX_SCORES; i++)
+	{
+		scores[i] = 0; //MAX_SCORES - i;
+		gamertag[i] = " ";
+	}
+	gamertag[0] = " R2 Builders ";
+	gamertag[1] = "*************";
+	gamertag[2] = "  Le Q.C.M. ";
+	gamertag[3] = "  Star Wars ";
+	gamertag[4] = "";
+	gamertag[5] = "Made by";
+	gamertag[6] = "       Boris ";
+	gamertag[7] = " - 02/2018 - ";
+	gamertag[8] = "";
+	gamertag[9] = "Just in time";
+	gamertag[10] = "    for";
+	gamertag[11] = "* M A K E R";
+	gamertag[12] = "  F A I R E *";
+	gamertag[13] = "";
+	gamertag[14] = " -- Lille -- ";
+	gamertag[15] = "";
+	gamertag[16] = "";
+	gamertag[17] = "";
+	gamertag[18] = "";
+	gamertag[19] = "";
+	theInput = "*** Boris ***";
 }
 
 bool TheDisplay::isTextKey(unsigned long key)
@@ -158,6 +184,52 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 		case PageConfiguration:
 			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
+		case PageScores:
+			sendBytes(90, page_header); // on enleve le cadre
+			sendBytes(HALL_OF_FAME_SIZE, hall_of_fame);
+			minitel.textMode();
+			for (uint8_t i = 0; i < (MAX_SCORES / 2); i++)
+			{
+				minitel.moveCursorXY(0, 6 + i * 2);
+				minitel.attributs(DOUBLE_HAUTEUR);
+				minitel.attributs(CARACTERE_VERT);
+				minitel.attributs(INVERSION_FOND);
+				minitel.print(String(i + 1));
+				minitel.attributs(FOND_NORMAL);
+				minitel.print(" ");
+				minitel.attributs(CARACTERE_CYAN);
+				if (scoreToHighlight == i)
+					minitel.attributs(CLIGNOTEMENT);
+				minitel.print(gamertag[i]);
+				minitel.moveCursorXY(1 + 1 + 13 + 1, 7 + i * 2);
+				minitel.attributs(CARACTERE_MAGENTA);
+				if (scoreToHighlight == i)
+					minitel.attributs(CLIGNOTEMENT);
+				writeTextRight(String(scores[i]), 3);
+				if (scoreToHighlight == i)
+					minitel.attributs(FIXE);
+
+				minitel.moveCursorXY(20, 6 + i * 2);
+				minitel.attributs(DOUBLE_HAUTEUR);
+				minitel.attributs(CARACTERE_VERT);
+				minitel.attributs(INVERSION_FOND);
+				minitel.print(String(i + (MAX_SCORES / 2) + 1));
+				minitel.attributs(FOND_NORMAL);
+				minitel.print(" ");
+				minitel.attributs(CARACTERE_CYAN);
+				if (scoreToHighlight == (i + (MAX_SCORES / 2)))
+					minitel.attributs(CLIGNOTEMENT);
+				minitel.print(gamertag[i + (MAX_SCORES / 2)]);
+				minitel.moveCursorXY(20 + 1 + 1 + 1 + 13 + 1, 7 + i * 2);
+				minitel.attributs(CARACTERE_MAGENTA);
+				if (scoreToHighlight == (i + (MAX_SCORES / 2)))
+					minitel.attributs(CLIGNOTEMENT);
+				writeTextRight(String(scores[i + (MAX_SCORES / 2)]), 3);
+				if (scoreToHighlight == (i + (MAX_SCORES / 2)))
+					minitel.attributs(FIXE);
+			}
+			scoreToHighlight = -1;
+			break;
 		case PageAccueil:
 			sendBytes(PAGE_ACCUEIL_SIZE, page_accueil);
 			/*minitel.newScreen();
@@ -201,7 +273,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			writeTextInBox("Pour effectuez le classement et peut-être gagner un lot, nous avons besoin d'un pseudonyme afin de vous identifier.", 2, 8, 36, 4, CARACTERE_BLANC);
 			minitel.moveCursorXY(2, 13);
 			minitel.attributs(CARACTERE_BLANC);
-			minitel.print("Votre pseudo : ...............");
+			minitel.print("Votre pseudo : ..............");
 
 			writeTextInBox("Pour corrigez, appuyez sur la touche 'CORRECTION'. Une fois terminé votre saisie, appuyez sur la touche verte 'ENVOI'.", 2, 15, 36, 4, CARACTERE_VERT);
 
@@ -214,7 +286,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			posY = 13;
 			minitel.moveCursorXY(posX, posY);
 			minitel.cursor();
-			startInput(15);
+			startInput(14);
 			break;
 	}
 	//minitelTimeLastCommand = 0;
@@ -227,6 +299,13 @@ void TheDisplay::writeCenter(String text, uint8_t y, byte color, bool blink)
 	minitel.attributs(color);
 	if(blink)
 		minitel.attributs(CLIGNOTEMENT);
+	minitel.print(text);
+}
+
+void TheDisplay::writeTextRight(String text, uint8_t width)
+{
+	for (uint8_t i = text.length(); i < width; i++)
+		minitel.print(" ");
 	minitel.print(text);
 }
 
@@ -499,4 +578,22 @@ void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatu
 		minitel.attributs(FIXE);
 		minitel.print(" points");
 
+		for (uint8_t i = 0; i < MAX_SCORES;i++)
+		{
+			if(scores[i] < points)
+			{
+				// on bat un score !
+				// on décale le restant du tableau
+				for (uint8_t j = MAX_SCORES - 2; j > i; j--)
+				{
+					scores[j] = scores[j - 1];
+					gamertag[j] = gamertag[j - 1];
+				}
+				// on insère notre joueur
+				scores[i] = points;
+				gamertag[i] = theInput;
+				scoreToHighlight = i;
+				break;
+			}
+		}
 }

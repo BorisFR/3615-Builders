@@ -50,4 +50,7 @@ enum PlayerStatus
 // temps limite pour répondre
 #define SECONDS_TO_ANSWER 30 * 1000
 
+// nombre de joueurs au classement
+#define MAX_SCORES 18
+
 #endif

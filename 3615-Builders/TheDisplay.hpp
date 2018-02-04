@@ -18,12 +18,14 @@
 #include "rang_padawan.hpp"
 #include "rang_chevalier.hpp"
 #include "rang_maitre.hpp"
+#include "hall_of_fame.hpp"
 
 #define MINITEL_SCREEN_TIMEOUT ((4 * 60 * 1000) - (5 * 1000)) // 4 minutes - 5 secondes
 
 enum MINITEL_PAGE
 {
 	PageConfiguration,
+	PageScores,
 	PageAccueil,
 	PageChoixNiveau,
 	PageSaisieNom,
@@ -41,6 +43,7 @@ class TheDisplay
 		bool isTextKey(unsigned long);
 		unsigned long lastKey;
 		uint8_t getNumericInputNumber(uint8_t from, uint8_t to);
+		void writeTextRight(String text, uint8_t width);
 		void writeTextOn(String text, uint8_t width);
 		void writeTextInBox(String text, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color);
 		uint8_t memoChrono;
@@ -52,8 +55,12 @@ class TheDisplay
 		String theInput;
 		bool resetTimer;
 		bool inputIsReady;
+		int8_t scoreToHighlight;
 
 		void startInput(uint8_t size);
+
+		uint16_t scores[MAX_SCORES];
+		String gamertag[MAX_SCORES];
 
 	  public:
 		void setup();

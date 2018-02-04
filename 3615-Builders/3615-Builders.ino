@@ -15,12 +15,15 @@ String gamerName;
 uint8_t playerAnswer;
 uint8_t playerLevel;
 
+bool showScores;
+
 // les différents états du programme
 ///////////////////////////////////////////////////////////////////////////////
 enum ProgramStatus
 {
 	DisplayConfiguration,
 	EntryConfiguration,
+	DisplayHallOfFame,
 	DisplayWelcome,
 	WaitForKeypress,
 	DisplayChooseLevel,
@@ -52,6 +55,7 @@ void setup()
 #endif
 	game.setup();
 	display.setup();
+	showScores = false;
 	programStatus = DisplayWelcome;
 #ifdef DEBUG
 	debug("3615 Builders ready!");
@@ -68,34 +72,43 @@ void loop()
 	// le boulot à faire en fonction de l'état en cours
 	switch (programStatus)
 	{
+	// on affiche la tableau des scores
+	///////////////////////////////////////////////////////////////////////////
+	case DisplayHallOfFame:
+		display.showPage(PageScores);
+		showScores = true;
+		programStatus = WaitForKeypress;
+		timeout = 0;
+		break;
 	// on affiche la page d'accueil
 	///////////////////////////////////////////////////////////////////////////
 	case DisplayWelcome:
+		showScores = false;
 		display.showPage(PageAccueil);
+		programStatus = WaitForKeypress;
 		//display.showPage(PageResultat);
-		//display.showResult(20, 0, GrandMaitre, MASTER_MOTTO);
-		//display.showResult(18, 2, Chevalier, CHEVALIER_MOTTO);
+		//display.showResult(20, 0, GrandMaitre, MASTER_MOTTO, 142);
+		//display.showResult(18, 2, Chevalier, CHEVALIER_MOTTO, 99);
 		//display.showResult(10, 9, Padawan, PADAWAN_MOTTO);
 		//display.showResult(9, 10, Initie, INITIE_MOTTO);
 		//display.showResult(1, 19, Sensitif, SENSITIF_MOTTO);
 		//display.showResult(0, 20, Human, HUMAN_MOTTO);
-		programStatus = WaitForKeypress;
+		//programStatus = WaitForEnding;
 		timeout = 0;
 		break;
 
 	// attente que quelqu'un se manifeste...
 	case WaitForKeypress:
 		// personne n'interagit
-		if (timeout > SECONDS_TO_ANSWER)
+		if ((timeout > SECONDS_TO_ANSWER) || (display.isCancel()))
 		{
 			// juste ré-affiche la page
 			// on peut imaginer faire des animations...
-			programStatus = DisplayWelcome;
-			break;
-		}
-		if(display.isCancel())
-		{
-			programStatus = DisplayEnterName;
+			if(showScores)
+				programStatus = DisplayWelcome;
+			else
+				programStatus = DisplayHallOfFame;
+			showScores = !showScores;
 			break;
 		}
 		// TODO: gérer le code secret pour l'écran de configuration
@@ -302,12 +315,12 @@ void loop()
 	case WaitForEnding:
 		if (timeout > SECONDS_TO_ANSWER)
 		{
-			programStatus = DisplayWelcome;
+			programStatus = DisplayHallOfFame;
 			break;
 		}
 		if (display.isCancel())
 		{
-			programStatus = DisplayWelcome;
+			programStatus = DisplayHallOfFame;
 			break;
 		}
 		if (display.isKeyPress())

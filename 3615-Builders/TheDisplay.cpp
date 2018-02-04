@@ -1,21 +1,16 @@
 #include "TheDisplay.hpp"
 
-//Minitel minitel(PIN_MINITEL_SERIAL_TX, PIN_MINITEL_SERIAL_RX);
 Minitel minitel(SERIAL_MINITEL);
 
 void TheDisplay::setup()
 {
 	int speed = minitel.searchSpeed();
-	Serial.println(speed);
+	Serial.println("Communication : " + String(speed) + " bauds");
 	minitel.newScreen();
 	minitel.smallMode();
-	minitel.print("Hello world!");
-
-	/*minitel.clearScreen();
-	minitel.graphicMode();
-	minitel.noPixelate();
-	minitel.textMode();*/
-	minitelTimeLastCommand = 0;
+	minitel.print("Bonjour le monde !");
+	//minitelTimeLastCommand = 0;
+	isInInputTextMode = false;
 	keyIsPressed = false;
 	lastKey = 0;
 }
@@ -30,12 +25,50 @@ bool TheDisplay::isTextKey(unsigned long key)
 		(key != REPETITION) &&
 		(key != GUIDE) &&
 		(key != CORRECTION) &&
-		(key != SUITE) &&
-		(key != ENVOI))
+		(key != SUITE))
 	{
 		return true;
 	}
 	return false;
+}
+
+bool TheDisplay::displayChrono(uint8_t value)
+{
+	if (value == memoChrono)
+		return false;
+	minitel.noCursor();
+	memoChrono = value;
+	// chrono (bleu)
+	minitel.moveCursorXY(39, 24);
+	minitel.print(String(30 - value));
+	if (value == 21)
+		minitel.print(" ");
+	// wait
+	minitel.moveCursorXY(posX, posY);
+	minitel.cursor();
+	if (resetTimer){
+		resetTimer = false;
+		return true;
+	}
+	return false;
+}
+
+void TheDisplay::startInput(uint8_t size)
+{
+	maxInputSize = size;
+	theInput = "";
+	inputIsReady = false;
+	isInInputTextMode = true;
+}
+
+String TheDisplay::getInputValue()
+{
+	return theInput;
+}
+
+bool TheDisplay::isInputReady()
+{
+	return inputIsReady;
 }
 
 void TheDisplay::loop()
@@ -51,21 +84,74 @@ void TheDisplay::loop()
 	{
 		keyIsPressed = true;
 	}
+	// à mettre en dernier !
+	// attente de la saisie d'un texte ?
+	if (!isInInputTextMode)
+		return;
+	keyIsPressed = false;
+	// une touche appuyée ?
+	if (lastKey == 0) 
+		return;
+	if (inputIsReady)
+		return;
+	if (lastKey == ENVOI)
+	{
+		// aucune saisie en cours, on ne fait rien
+		if (theInput.length() == 0)
+			return;
+		resetTimer = true;
+		inputIsReady = true;
+		return;
+	}
+	// on delete le dernier caractère
+	if (lastKey == CORRECTION)
+	{
+		resetTimer = true;
+		// aucune saisie en cours, on ne fait rien
+		if (theInput.length() == 0)
+			return;
+		if (theInput.length() == 1)
+			theInput = "";
+		else
+			theInput = theInput.substring(0, theInput.length() - 1);
+		posX--;
+		minitel.noCursor();
+		minitel.moveCursorXY(posX - theInput.length(), posY);
+		minitel.print(theInput);
+		for (uint8_t i = theInput.length(); i < maxInputSize; i++)
+			minitel.print(".");
+		minitel.moveCursorXY(posX, posY);
+		minitel.cursor();
+		return;
+	}
+	// ajout du caractère saisie
+	if (lastKey >= 32 && lastKey <= 126)
+	{
+		resetTimer = true;
+		if (theInput.length() >= maxInputSize)
+			return;
+		char x = ' ' + (lastKey - 32);
+		theInput += String(x);
+		minitel.print(x);
+		posX++;
+		return;
+	}
 }
 
 void TheDisplay::sendBytes(uint16_t size, const uint8_t bytes[])
 {
+	minitel.noCursor();
 	for (uint16_t i = 0; i < size; i++)
 	{
 		uint8_t c = bytes[i];
 		minitel.writeByte(c);
-		//minitel.textByte(c);
 	}
-	minitelTimeLastCommand = 0;
+	//minitelTimeLastCommand = 0;
 }
 
 void TheDisplay::showPage(MINITEL_PAGE page)
 {
+	isInInputTextMode = false;
 	// TODO: intégrer les pages manquantes
 	switch(page)
 	{
@@ -85,19 +171,63 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			break;
 		case PageChoixNiveau:
 			sendBytes(PAGE_DIFFICULTE_SIZE, page_difficulte);
+			writeCenter(theInput, 3, CARACTERE_BLANC, false);
+			posX = 16;
+			posY = 24;
+			minitel.moveCursorXY(posX, posY);
 			break;
 		case PageQuestion:
 			sendBytes(PAGE_QUESTION_SIZE, page_question);
+			posX = 15;
+			posY = 24;
 			break;
 		case PageAbandon:
-			minitel.newScreen();
-			minitel.print("Abandon");
-			//sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			sendBytes(PAGE_HEADER_SIZE, page_header);
+			minitel.moveCursorXY(3, 5);
+			minitel.attributs(CARACTERE_BLEU);
+			minitel.print("Trop tard !");
+			writeTextInBox("Vous avez été trop long pour répondre, la partie est terminée.", 2, 8, 36, 4, CARACTERE_BLANC);
+			writeCenter("Appuyez sur une touche", 12, CARACTERE_BLANC, true);
 			break;
 		case PageResultat:
 			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			writeCenter(theInput, 3, CARACTERE_CYAN, false);
+			break;
+		case PageSaisieNom:
+			sendBytes(PAGE_HEADER_SIZE, page_header);
+			minitel.moveCursorXY(3, 5);
+			minitel.attributs(CARACTERE_BLEU);
+			minitel.print("Entrez votre pseudo");
+			writeTextInBox("Pour effectuez le classement et peut-être gagner un lot, nous avons besoin d'un pseudonyme afin de vous identifier.", 2, 8, 36, 4, CARACTERE_BLANC);
+			minitel.moveCursorXY(2, 13);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Votre pseudo : ...............");
+
+			writeTextInBox("Pour corrigez, appuyez sur la touche 'CORRECTION'. Une fois terminé votre saisie, appuyez sur la touche verte 'ENVOI'.", 2, 15, 36, 4, CARACTERE_VERT);
+
+			// chrono (bleu)
+			minitel.moveCursorXY(23, 24);
+			minitel.attributs(CARACTERE_BLEU);
+			minitel.print("temps restant : 30");
+			memoChrono = 30;
+			posX = 17;
+			posY = 13;
+			minitel.moveCursorXY(posX, posY);
+			minitel.cursor();
+			startInput(15);
 			break;
 	}
+	//minitelTimeLastCommand = 0;
+}
+
+void TheDisplay::writeCenter(String text, uint8_t y, byte color, bool blink)
+{
+	uint8_t x = (40 - text.length()) / 2;
+	minitel.moveCursorXY(x, y);
+	minitel.attributs(color);
+	if(blink)
+		minitel.attributs(CLIGNOTEMENT);
+	minitel.print(text);
 }
 
 void TheDisplay::writeTextOn(String text, uint8_t width)
@@ -158,28 +288,12 @@ void TheDisplay::writeTextInBox(String chaine, uint8_t x, uint8_t y, uint8_t wid
 		}
 		//Serial.println(" Ecrit: " + String(lengthToGet) + " =>*" + temp + "*");
 		minitel.moveCursorXY(x, currentY++);
-		minitel.attributs(CARACTERE_BLANC);
+		minitel.attributs(color);
 		minitel.print(temp.trim());
 		currentPosText += lengthToGet;
 		text = text.substring(currentPosText).trim();
 		lengthToPut = text.length();
 	}
-}
-
-void TheDisplay::displayChrono(uint8_t value)
-{
-	if (value == memoChrono)
-		return;
-	minitel.noCursor();
-	memoChrono = value;
-	// chrono (bleu)
-	minitel.moveCursorXY(39, 24);
-	minitel.print(String(30 - value));
-	if(value == 21)
-		minitel.print(" ");
-	// wait
-	minitel.moveCursorXY(17, 24);
-	minitel.cursor();
 }
 
 void TheDisplay::showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3)
@@ -219,8 +333,10 @@ void TheDisplay::showQuestion(uint8_t number, uint8_t level, String category, St
 	minitel.moveCursorXY(39, 24);
 	minitel.print("30");
 	memoChrono = 30;
+	posX = 17;
+	posY = 24;
 	// wait
-	minitel.moveCursorXY(17, 24);
+	minitel.moveCursorXY(posX, posY);
 	minitel.cursor();
 }
 
@@ -240,7 +356,6 @@ bool TheDisplay::isCancel()
 		(lastKey == RETOUR) ||
 		(lastKey == REPETITION) ||
 		(lastKey == GUIDE) ||
-		(lastKey == CORRECTION) ||
 		(lastKey == SUITE) ||
 		(lastKey == ENVOI))
 	{
@@ -274,60 +389,101 @@ uint8_t TheDisplay::getAnswer()
 void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto)
 {
 	//minitel.attributs(FOND_JAUNE);
-	minitel.moveCursorXY(15, 5);
+	minitel.moveCursorXY(17, 5);
 	minitel.attributs(CARACTERE_BLEU);
 	if (goodAnswers == 0)
-		minitel.print("aucune bonne réponse");
+		minitel.print("aucune bonne réponse !");
 	if (goodAnswers == 1)
 		minitel.print("1 bonne réponse / " + String(MAX_QUESTIONS_PER_GAME));
 	if ((goodAnswers > 1) && (goodAnswers < MAX_QUESTIONS_PER_GAME))
 		minitel.print(String(goodAnswers) + " bonnes réponses / " + String(MAX_QUESTIONS_PER_GAME));
 	if (goodAnswers == MAX_QUESTIONS_PER_GAME)
-		minitel.print("toutes les réponses bonnes !");
+		minitel.print("tout bon !");
 
 	if (badAnswers == 0) {
 		minitel.moveCursorXY(27, 7);
 		minitel.attributs(CARACTERE_BLEU);
-		minitel.println("aucune erreur !");
+		minitel.print("aucune erreur !");
 	}
 	if (badAnswers == 1) {
 		minitel.moveCursorXY(27, 7);
 		minitel.attributs(CARACTERE_BLEU);
-		minitel.println("soit " + String(badAnswers) + " erreur");
+		minitel.print("soit " + String(badAnswers) + " erreur");
 	}
-	if ((badAnswers > 0) && (badAnswers < 10)) {
+	if ((badAnswers > 1) && (badAnswers < 10)) {
 		minitel.moveCursorXY(26, 7);
 		minitel.attributs(CARACTERE_BLEU);
-		minitel.println("soit " + String(badAnswers) + " erreurs");
+		minitel.print("soit " + String(badAnswers) + " erreurs");
 	}
 	if ((badAnswers > 9) && (badAnswers < MAX_QUESTIONS_PER_GAME))
 	{
 		minitel.moveCursorXY(25, 7);
 		minitel.attributs(CARACTERE_BLEU);
-		minitel.println("soit " + String(badAnswers) + " erreurs");
+		minitel.print("soit " + String(badAnswers) + " erreurs");
 	}
 	if (badAnswers == MAX_QUESTIONS_PER_GAME)
 	{
 		minitel.moveCursorXY(31, 7);
 		minitel.attributs(CARACTERE_BLEU);
-		minitel.println("tout faux");
+		minitel.print("tout faux");
 	}
 
-	writeTextInBox(motto, 1, 12, 18, 3, CARACTERE_BLANC);
+	writeTextInBox(motto, 0, 12, 19, 3, CARACTERE_BLANC);
 
-// TODO: show big text
 	switch(status) {
 		case Human:
+			minitel.moveCursorXY(0, 7);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Humain");
+			sendBytes(RANG_HUMAN_SIZE, rang_human);
+			//writeCenter("|__| |  |  |\\/|  /\\  | |\\ |", 8, CARACTERE_BLANC, false);
+			//writeCenter("|  | \\__/  |  | /~~\\ | | \\|", 9, CARACTERE_BLANC, false);
+			//writeCenter("", 10, CARACTERE_BLANC, false);
 			break;
 		case Sensitif:
+			minitel.moveCursorXY(0, 7);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Sensitif");
+			sendBytes(RANG_SENSITIF_SIZE, rang_sensitif);
+			//writeCenter(" __   ___       __    ___    ___", 8, CARACTERE_BLANC, false);
+			//writeCenter("/__  |__  |\\ | /__  |  |  | |__ ", 9, CARACTERE_BLANC, false);
+			//writeCenter(".__/ |___ | \\| .__/ |  |  | |   ", 10, CARACTERE_BLANC, false);
 			break;
 		case Initie:
+			minitel.moveCursorXY(0, 7);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Initié");
+			sendBytes(RANG_INITIE_SIZE, rang_initie);
+			//writeCenter("         ___    ___", 8, CARACTERE_BLANC, false);
+			//writeCenter("| |\\ | |  |  | |__ ", 9, CARACTERE_BLANC, false);
+			//writeCenter("| | \\| |  |  | |___", 10, CARACTERE_BLANC, false);
 			break;
 		case Padawan:
+			minitel.moveCursorXY(0, 7);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Padawan");
+			sendBytes(RANG_PADAWAN_SIZE, rang_padawan);
+			//writeCenter(" __        __                     ", 8, CARACTERE_BLANC, false);
+			//writeCenter("|__)  /\\  |  \\  /\\  |  |  /\\  |\\ |", 9, CARACTERE_BLANC, false);
+			//writeCenter("|    /~~\\ |__/ /~~\\ |/\\| /~~\\ | \\|", 10, CARACTERE_BLANC, false);
 			break;
 		case Chevalier:
+			minitel.moveCursorXY(0, 7);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Chevalier Jedi");
+			sendBytes(RANG_CHEVALIER_SIZE, rang_chevalier);
+			//writeCenter(" __        ___                  ___  __  ", 8, CARACTERE_BLANC, false);
+			//writeCenter("/    |__| |__  \\  / /\\  |    | |__  |__) ", 9, CARACTERE_BLANC, false);
+			//writeCenter("\\__, |  | |___  \\/ /~~\\ |___ | |___ |  \\ ", 10, CARACTERE_BLANC, false);
 			break;
 		case GrandMaitre:
+			minitel.moveCursorXY(0, 7);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print("Grand Maître Jedi");
+			sendBytes(RANG_MAITRE_SIZE, rang_maitre);
+			//writeCenter("            ___  __   ___", 8, CARACTERE_BLANC, false);
+			//writeCenter("|\\/|  /\\  |  |  |__) |__ ", 9, CARACTERE_BLANC, false);
+			//writeCenter("|  | /~~\\ |  |  |  \\ |___", 10, CARACTERE_BLANC, false);
 			break;
 		}
 }

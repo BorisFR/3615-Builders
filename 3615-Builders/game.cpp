@@ -123,7 +123,7 @@ void Game::startNewGame(uint8_t level, uint16_t numberQuestions)
 
 void Game::nextQuestion()
 {
-	if((currentQuestion + 1) == currentMaxQuestions)
+	if(currentQuestion == currentMaxQuestions)
 	{
 		return;
 	}
@@ -133,7 +133,7 @@ void Game::nextQuestion()
 
 bool Game::isGameFinish()
 {
-	if((currentQuestion + 1) == currentMaxQuestions)
+	if(currentQuestion == currentMaxQuestions)
 	{
 		return true;
 	}
@@ -231,14 +231,14 @@ PlayerStatus Game::getPlayerStatus()
 String Game::getPlayerMotto()
 {
 	if (goodAnswers == 0)
-		return "Star Wars, ça vous cause ?";
+		return HUMAN_MOTTO;
 	if (goodAnswers < 6)
-		return "Vous êtes sensible à la Force, continuez votre découverte.";
+		return SENSITIF_MOTTO;
 	if (goodAnswers < 11)
-		return "La Force est en vous, découvrez vos possibilités.";
+		return INITIE_MOTTO;
 	if (goodAnswers < 15)
-		return "La Force vous guide, approfondissez vos connaissances.";
+		return PADAWAN_MOTTO;
 	if (goodAnswers < 19)
-		return "Votre sagesse vous honore, partagez votre savoir.";
-	return "Votre maîtrise de la Force est exemplaire !";
+		return CHEVALIER_MOTTO;
+	return MASTER_MOTTO;
 }

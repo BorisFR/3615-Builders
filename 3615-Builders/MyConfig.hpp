@@ -22,6 +22,13 @@
 #define CATEGORY_KNOWLEDGE "Connaissance"
 #define CATEGORY_HISTORY "Histoire"
 
+#define HUMAN_MOTTO "Star Wars, ça vous cause ?"
+#define SENSITIF_MOTTO "Vous êtes sensible à la Force, continuez votre découverte."
+#define INITIE_MOTTO "La Force est en vous, découvrez vos possibilités."
+#define PADAWAN_MOTTO "La Force vous guide, approfondissez vos connaissances."
+#define CHEVALIER_MOTTO "Votre sagesse vous honore, partagez votre savoir."
+#define MASTER_MOTTO "Votre maîtrise de la Force est exemplaire !"
+
 enum PlayerStatus
 {
 	Human,

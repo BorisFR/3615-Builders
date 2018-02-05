@@ -39,6 +39,7 @@ void TheDisplay::setup()
 	gamertag[18] = "";
 	gamertag[19] = "";
 	theInput = "*** Boris ***";
+	scoreToHighlight = -1;
 }
 
 bool TheDisplay::isTextKey(unsigned long key)
@@ -177,6 +178,7 @@ void TheDisplay::sendBytes(uint16_t size, const uint8_t bytes[])
 
 void TheDisplay::showPage(MINITEL_PAGE page)
 {
+	String fullDate;
 	isInInputTextMode = false;
 	// TODO: intégrer les pages manquantes
 	switch(page)
@@ -232,6 +234,11 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			break;
 		case PageAccueil:
 			sendBytes(PAGE_ACCUEIL_SIZE, page_accueil);
+			fullDate = String(hour()) + ":";
+			if(minute() < 10)
+				fullDate += "0";
+			fullDate += String(minute()) + " " + weekDays[weekday() - 1] + " " + String(day()) + " " + monthsName[month() - 1] + " " + String(year());
+			writeCenter(fullDate, 24, CARACTERE_BLEU, false);
 			/*minitel.newScreen();
 			minitel.print("Test");
 			minitel.printInBox("Bonjour le monde test", 1, 1, 9, 3, CARACTERE_BLANC);

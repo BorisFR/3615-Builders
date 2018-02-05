@@ -1,13 +1,17 @@
 #include <Arduino.h>
+#include <TimeLib.h>
 #include "ElapsedMillis.hpp"
 #include "MyConfig.hpp"
 #include "Game.hpp"
 #include "TheDisplay.hpp"
+#include "TheData.hpp"
 
 // ce qui gère le QCM
 Game game;
 // ce qui gère le lien avec le Minitel (écran + clavier)
 TheDisplay display;
+
+TheData theData;
 // pour gérer les différents time out pendant le jeu
 ElapsedMillis timeout;
 
@@ -45,18 +49,52 @@ void debug(String text)
 }
 #endif
 
+time_t getTeensy3Time()
+{
+	return Teensy3Clock.get();
+}
+
+void printDigits(int digits)
+{
+	// utility function for digital clock display: prints preceding colon and leading 0
+	Serial.print(":");
+	if (digits < 10)
+		Serial.print('0');
+	Serial.print(digits);
+}
+
+void digitalClockDisplay()
+{
+	// digital clock display of the time
+	Serial.print(hour());
+	printDigits(minute());
+	printDigits(second());
+	Serial.print(" ");
+	Serial.print(day());
+	Serial.print(" ");
+	Serial.print(month());
+	Serial.print(" ");
+	Serial.print(year());
+	Serial.println();
+}
+
 // initialisation globale du programme
 ///////////////////////////////////////////////////////////////////////////////
 void setup()
 {
 #ifdef DEBUG
+	setSyncProvider(getTeensy3Time);
 	Serial.begin(115200);
 	debug("3615 Builders starting...");
 #endif
+	digitalClockDisplay();
 	game.setup();
 	display.setup();
 	showScores = false;
 	programStatus = DisplayWelcome;
+
+	theData.setup();
+	//theData.saveScore("Stéphane", 326);
 #ifdef DEBUG
 	debug("3615 Builders ready!");
 #endif
@@ -300,6 +338,8 @@ void loop()
 	case DisplayResult:
 		// on affiche la page de résultat
 		display.showPage(PageResultat);
+		// on sauvegarde le résultat du joueur
+		theData.saveScore(gamerName, game.getPoints());
 		// et on affiche le résultat du joueur
 		display.showResult(game.getNumberOfGoodAnswers(), 
 			game.getNumberOfBadAnswers(), game.getPlayerStatus(), 

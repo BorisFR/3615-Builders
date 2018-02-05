@@ -29,6 +29,27 @@
 #define CHEVALIER_MOTTO "Votre sagesse vous honore, partagez votre savoir."
 #define MASTER_MOTTO "Votre maîtrise de la Force est exemplaire !"
 
+#define MONDAY "lundi"
+#define TUESDAY "mardi"
+#define WEDNESDAY "mercredi"
+#define THURSDAY "jeudi"
+#define FRIDAY "vendredi"
+#define SATURDAY "samedi"
+#define SUNDAY "dimanche"
+
+#define JANUARY "janvier"
+#define FEBRUARY "février"
+#define MARCH "mars"
+#define APRIL "avril"
+#define MAY "mai"
+#define JUNE "juin"
+#define JULY "juillet"
+#define AUGUST "août"
+#define SEPTEMBER "septembre"
+#define OCTOBER "octobre"
+#define NOVEMBER "novembre"
+#define DECEMBER "décembre"
+
 enum PlayerStatus
 {
 	Human,

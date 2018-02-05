@@ -1,3 +1,19 @@
+
+Date time
+					nb valeur
+seconde : 0 à 59	=> 60		1
+minute : 0 à 59		=> 60		1
+heure : 0 à 23		=> 24		1
+day : 1 à 31		=> 31		1
+mois : 1 à 12		=> 12		1
+année : 2 ou 4		=>  2		2 = (année - 2000)
+
+26 lettres Majuscule + Minuscule => 52 valeurs
+0 à 9 => 10 valeurs
+			 A		   Z   a		 z	  0			9
+tableau[62] = {65, ... , 90, 97, ... , 122, 48, ... , 57}
+et remplacer la valeur par la correspondance du tableau
+
 Calcul des points pour effectuer un classement
 
 mauvaise réponse : 0

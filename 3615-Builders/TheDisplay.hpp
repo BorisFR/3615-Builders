@@ -3,6 +3,7 @@
 #define THE_DISPLAY_HPP
 
 #include <Arduino.h>
+#include <TimeLib.h>
 #include <SoftwareSerial.h>
 #include "ElapsedMillis.hpp"
 #include "MyConfig.hpp"
@@ -37,45 +38,47 @@ enum MINITEL_PAGE
 class TheDisplay
 {
 	private:
-		void sendBytes(uint16_t size, const uint8_t bytes[]);
-		//ElapsedMillis minitelTimeLastCommand;
-		bool keyIsPressed;
-		bool isTextKey(unsigned long);
-		unsigned long lastKey;
-		uint8_t getNumericInputNumber(uint8_t from, uint8_t to);
-		void writeTextRight(String text, uint8_t width);
-		void writeTextOn(String text, uint8_t width);
-		void writeTextInBox(String text, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color);
-		uint8_t memoChrono;
-		uint8_t posX;
-		uint8_t posY;
-		void writeCenter(String text, uint8_t y, byte color, bool blink);
-		bool isInInputTextMode;
-		uint8_t maxInputSize;
-		String theInput;
-		bool resetTimer;
-		bool inputIsReady;
-		int8_t scoreToHighlight;
+	  String weekDays[7] = {SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY};
+	  String monthsName[12] = {JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER};
+	  void sendBytes(uint16_t size, const uint8_t bytes[]);
+	  //ElapsedMillis minitelTimeLastCommand;
+	  bool keyIsPressed;
+	  bool isTextKey(unsigned long);
+	  unsigned long lastKey;
+	  uint8_t getNumericInputNumber(uint8_t from, uint8_t to);
+	  void writeTextRight(String text, uint8_t width);
+	  void writeTextOn(String text, uint8_t width);
+	  void writeTextInBox(String text, uint8_t x, uint8_t y, uint8_t width, uint8_t height, byte color);
+	  uint8_t memoChrono;
+	  uint8_t posX;
+	  uint8_t posY;
+	  void writeCenter(String text, uint8_t y, byte color, bool blink);
+	  bool isInInputTextMode;
+	  uint8_t maxInputSize;
+	  String theInput;
+	  bool resetTimer;
+	  bool inputIsReady;
+	  int8_t scoreToHighlight;
 
-		void startInput(uint8_t size);
+	  void startInput(uint8_t size);
 
-		uint16_t scores[MAX_SCORES];
-		String gamertag[MAX_SCORES];
+	  uint16_t scores[MAX_SCORES];
+	  String gamertag[MAX_SCORES];
 
-	  public:
-		void setup();
-		void loop();
+	public:
+	  void setup();
+	  void loop();
 
-		void showPage(MINITEL_PAGE page);
-		bool isKeyPress();
-		bool isCancel();
-		void showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3);
-		bool displayChrono(uint8_t value);
-		uint8_t getLevel();
-		uint8_t getAnswer();
-		void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
-		String getInputValue();
-		bool isInputReady();
+	  void showPage(MINITEL_PAGE page);
+	  bool isKeyPress();
+	  bool isCancel();
+	  void showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3);
+	  bool displayChrono(uint8_t value);
+	  uint8_t getLevel();
+	  uint8_t getAnswer();
+	  void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
+	  String getInputValue();
+	  bool isInputReady();
 
 };
 

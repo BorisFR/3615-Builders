@@ -47,3 +47,12 @@ C'est à faire à chaque allumage du Minitel !
 
 L'ensemble des questions posées ainsi que les réponses données par les joueurs est sauvegardé. Le but est d'analyser à postériori ces résultats pour affiner le niveau de difficultés des réponses. Si une même question a toujours une réponse qui est bonne, son niveau de difficulté doit être faible et sera donc baissé si ça n'est pas le cas. A contrario, si une question a toujours des réponses fausses, cela veut dire qu'elle est d'un niveau de difficulté supérieure.
 Cela sera cependant effectué plus tard. Une version ultérieure pourra adapter ce niveau dynamiquement.
+
+### Library
+
+Voici les bibliothèques Arduino utilisées par le programme :  
+[QRcode](https://github.com/ricmoo/qrcode/) : permet de créer un QRcode  
+[Minitel1B_Hard](https://github.com/eserandour/Minitel1B_Hard) : permet la gestion du Minitel depuis un port Série  
+[ElapsedMillis](https://github.com/pfeerick/elapsedMillis/) : pour la gestion du time out  
+
+Pour le design de mes pages Minitel, j'ai utilisé le logiciel de création de page Minitel réalisé par Zigazou : [miedit](https://github.com/Zigazou/miedit)  

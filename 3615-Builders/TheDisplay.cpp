@@ -2,6 +2,26 @@
 
 Minitel minitel(SERIAL_MINITEL);
 
+
+
+void TheDisplay::generateQrCode(String value)
+{
+    uint8_t qrcodeData[qrcode_getBufferSize(QR_CODE_VERSION)];
+    qrcode_initText(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
+	//qrcode_initBytes(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
+	for (uint8_t y = 0; y < qrcode.size; y++) {
+		for (uint8_t x = 0; x < qrcode.size; x++) {
+			/*if (qrcode_getModule(&qrcode, x, y)) {
+				Serial.print("**");
+			} else {
+				Serial.print("  ");
+			}*/
+			Serial.print(qrcode_getModule(&qrcode, x, y) ? "\u2588\u2588": "  ");
+		}
+		Serial.print("\n");
+	}
+}
+
 void TheDisplay::setup()
 {
 	int speed = minitel.searchSpeed();
@@ -45,6 +65,14 @@ void TheDisplay::setup()
 void TheDisplay::bip()
 {
 	minitel.bip();
+}
+
+
+String TheDisplay::on2(uint8_t value)
+{
+	if(value < 10)
+		return "0" + String(value);
+	return String(value);
 }
 
 bool TheDisplay::isTextKey(unsigned long key)
@@ -608,4 +636,10 @@ void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatu
 				break;
 			}
 		}
+
+		String text = String(on2(hour())) + ":" +  String(on2(minute())) + ":" + String(on2(second())) + 
+		" a " + String(day()) + "/" + String(month()) + "/" + String(year()) +
+		" - Joueur : " + theInput.toUpperCase() + " - Score : " + String(points);
+
+		generateQrCode("");
 }

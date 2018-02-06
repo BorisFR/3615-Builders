@@ -6,6 +6,7 @@
 #include <TimeLib.h>
 #include <SoftwareSerial.h>
 #include "ElapsedMillis.hpp"
+#include "qrcode.h"
 #include "MyConfig.hpp"
 #include "Minitel1B_Hard.h"
 #include "page_accueil.hpp"
@@ -38,6 +39,9 @@ enum MINITEL_PAGE
 class TheDisplay
 {
 	private:
+		QRCode qrcode;
+		void generateQrCode(String value);
+		String on2(uint8_t value);
 	  String weekDays[7] = {SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY};
 	  String monthsName[12] = {JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER};
 	  void sendBytes(uint16_t size, const uint8_t bytes[]);

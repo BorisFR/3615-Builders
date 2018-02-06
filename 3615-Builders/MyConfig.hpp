@@ -74,4 +74,22 @@ enum PlayerStatus
 // nombre de joueurs au classement
 #define MAX_SCORES 18
 
+// http://www.qrcode.com/en/about/version.html
+// Nom du joueur : 14
+// Score : 3
+// date + heure : xx/xx/xxxx 10 + xx:xx:xx 8 = 18
+// soit un total de 35 caractères
+
+// minitel = 80 x 24
+// soit en graphique = 160 x 72
+
+// soit au max, un QRcode de 72x72...
+// niveau d'erreur max
+// et 35 caractères
+// = version 3 en High (58 caractères)
+// soit un QRcode de 29 x 29
+
+#define QR_CODE_VERSION 3
+#define QR_CODE_ERROR ECC_HIGH
+
 #endif

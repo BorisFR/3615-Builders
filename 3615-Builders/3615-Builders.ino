@@ -303,6 +303,7 @@ void loop()
 				debug("Good answer");
 			} else {
 				debug("False answer");
+				display.bip();
 			}
 			#endif
 			// on passe à la question suivante

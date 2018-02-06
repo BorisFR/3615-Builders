@@ -69,6 +69,7 @@ class TheDisplay
 	  void setup();
 	  void loop();
 
+		void bip();
 	  void showPage(MINITEL_PAGE page);
 	  bool isKeyPress();
 	  bool isCancel();

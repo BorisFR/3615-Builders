@@ -42,6 +42,11 @@ void TheDisplay::setup()
 	scoreToHighlight = -1;
 }
 
+void TheDisplay::bip()
+{
+	minitel.bip();
+}
+
 bool TheDisplay::isTextKey(unsigned long key)
 {
 	if ((key != 0) &&

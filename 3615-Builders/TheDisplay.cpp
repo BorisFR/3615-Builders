@@ -3,22 +3,23 @@
 Minitel minitel(SERIAL_MINITEL);
 
 
-
 void TheDisplay::generateQrCode(String value)
 {
+	Serial.println("[QRcode]");
     uint8_t qrcodeData[qrcode_getBufferSize(QR_CODE_VERSION)];
-    qrcode_initText(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
+	Serial.println("[QRcode] generating");
+	qrcode_initText(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
 	//qrcode_initBytes(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
-	for (uint8_t y = 0; y < qrcode.size; y++) {
+	Serial.println("[QRcode] sending to serial");
+	for (uint8_t y = 0; y < qrcode.size; y++)
+	{
+		lines[y] = "";
 		for (uint8_t x = 0; x < qrcode.size; x++) {
-			/*if (qrcode_getModule(&qrcode, x, y)) {
-				Serial.print("**");
-			} else {
-				Serial.print("  ");
-			}*/
-			Serial.print(qrcode_getModule(&qrcode, x, y) ? "\u2588\u2588": "  ");
+			//Serial.print(qrcode_getModule(&qrcode, x, y) ? "\u2588": " ");
+			lines[y] += qrcode_getModule(&qrcode, x, y) ? "1" : "0";
 		}
-		Serial.print("\n");
+		Serial.println(lines[y]);
+		//Serial.print("\n");
 	}
 }
 
@@ -219,6 +220,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 		case PageConfiguration:
 			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			break;
+
 		case PageScores:
 			sendBytes(90, page_header); // on enleve le cadre
 			sendBytes(HALL_OF_FAME_SIZE, hall_of_fame);
@@ -265,6 +267,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			}
 			scoreToHighlight = -1;
 			break;
+
 		case PageAccueil:
 			sendBytes(PAGE_ACCUEIL_SIZE, page_accueil);
 			fullDate = String(hour()) + ":";
@@ -281,6 +284,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			minitel.printInBox("Bonjour le monde test", 1, 13, 16, 3, CARACTERE_BLANC);
 			minitel.printInBox("Bonjour le monde test", 1, 16, 17, 3, CARACTERE_BLANC);*/
 			break;
+
 		case PageChoixNiveau:
 			sendBytes(PAGE_DIFFICULTE_SIZE, page_difficulte);
 			writeCenter(theInput, 3, CARACTERE_BLANC, false);
@@ -288,11 +292,13 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			posY = 24;
 			minitel.moveCursorXY(posX, posY);
 			break;
+
 		case PageQuestion:
 			sendBytes(PAGE_QUESTION_SIZE, page_question);
 			posX = 15;
 			posY = 24;
 			break;
+
 		case PageAbandon:
 			sendBytes(PAGE_HEADER_SIZE, page_header);
 			minitel.moveCursorXY(3, 5);
@@ -301,10 +307,12 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			writeTextInBox("Vous avez été trop long pour répondre, la partie est terminée.", 2, 8, 36, 4, CARACTERE_BLANC);
 			writeCenter("Appuyez sur une touche", 12, CARACTERE_BLANC, true);
 			break;
+
 		case PageResultat:
 			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
 			writeCenter(theInput, 3, CARACTERE_CYAN, false);
 			break;
+
 		case PageSaisieNom:
 			sendBytes(PAGE_HEADER_SIZE, page_header);
 			minitel.moveCursorXY(3, 5);
@@ -327,6 +335,89 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			minitel.moveCursorXY(posX, posY);
 			minitel.cursor();
 			startInput(13);
+			break;
+
+		case PageQRcode:
+			sendBytes(90, page_header); // on enleve le cadre
+			//sendBytes(PAGE_HEADER_SIZE, page_header);
+			//minitel.moveCursorXY(3, 5);
+			//minitel.attributs(CARACTERE_BLEU);
+			//minitel.print("Votre QRcode");
+
+			String text = String(day()) + "/" + String(month()) + "/" + String(year()) +
+						  " a " + String(on2(hour())) + ":" + String(on2(minute())) + ":" + String(on2(second())) +
+						  " - Joueur : " + "*** Boris ***" + " - Score : " + String(142);
+
+			generateQrCode(text.toUpperCase());
+
+			Serial.println("[QRcode]" + String(qrcode.size) + "x" + String(qrcode.size) + " sending to Minitel");
+			/*uint8_t y = 0;
+			while (y < qrcode.size)
+			{
+				minitel.moveCursorXY(3, 8 + (y / 3));
+				minitel.graphicMode();
+				minitel.attributs(CARACTERE_BLANC);
+				
+				for (uint8_t x = 0; x < qrcode.size; x += 2)
+				{
+					byte gfx = 0;
+					if (lines[y].substring(x, x + 1) == "1")
+						gfx += 32;
+					if (lines[y].substring(x + 1, x + 2) == "1")
+						gfx += 16;
+					if (lines[y + 1].substring(x, x + 1) == "1")
+						gfx += 8;
+					if (lines[y + 1].substring(x + 1, x + 2) == "1")
+						gfx += 4;
+					if (lines[y + 2].substring(x, x + 1) == "1")
+						gfx += 2;
+					if (lines[y + 2].substring(x + 1, x + 2) == "1")
+						gfx += 1;
+					minitel.graphic(gfx);
+				}
+				y += 3;
+			}*/
+			// QRcode en double taille
+			minitel.graphicMode();
+			minitel.attributs(CARACTERE_BLANC);
+			uint8_t y = 0;
+			uint8_t posY = 4;
+			while (y < qrcode.size)
+			{
+				uint8_t posX = 7;
+				for (uint8_t x = 0; x < qrcode.size; x += 2)
+				{
+					minitel.moveCursorXY(posX + x, posY);
+					byte gfx1 = 0;
+					byte gfx2 = 0;
+					byte gfx3 = 0;
+					byte gfx4 = 0;
+					if (lines[y].substring(x, x + 1) == "1")
+						gfx1 += 32 + 16 + 8 + 4;
+					if (lines[y].substring(x + 1, x + 2) == "1")
+						gfx2 += 32 + 16 + 8 + 4;
+					if (lines[y + 1].substring(x, x + 1) == "1")
+						gfx1 += 2 + 1;
+					if (lines[y + 1].substring(x + 1, x + 2) == "1")
+						gfx2 += 2 + 1;
+					if (lines[y + 1].substring(x, x + 1) == "1")
+						gfx3 += 32 + 16;
+					if (lines[y + 1].substring(x + 1, x + 2) == "1")
+						gfx4 += 32 + 16;
+					if (lines[y + 2].substring(x, x + 1) == "1")
+						gfx3 += 8 + 4 + 2 + 1;
+					if (lines[y + 2].substring(x + 1, x + 2) == "1")
+						gfx4 += 8 + 4 + 2 + 1;
+					minitel.graphic(gfx1);
+					minitel.graphic(gfx2);
+					minitel.moveCursorXY(posX + x, posY + 1);
+					if(x==0) minitel.graphicMode();
+					minitel.graphic(gfx3);
+					minitel.graphic(gfx4);
+				}
+				posY += 2;
+				y += 3;
+			}
 			break;
 	}
 	//minitelTimeLastCommand = 0;
@@ -505,46 +596,56 @@ uint8_t TheDisplay::getAnswer()
 	return getNumericInputNumber(1, 3);
 }
 
-void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points)
+void TheDisplay::showResult(String gamer, uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points)
 {
-	//minitel.attributs(FOND_JAUNE);
+	Serial.println("Showing result");
 	minitel.moveCursorXY(17, 5);
 	minitel.attributs(CARACTERE_BLEU);
 	if (goodAnswers == 0)
 		minitel.print("aucune bonne réponse !");
-	if (goodAnswers == 1)
-		minitel.print("1 bonne réponse / " + String(MAX_QUESTIONS_PER_GAME));
-	if ((goodAnswers > 1) && (goodAnswers < MAX_QUESTIONS_PER_GAME))
-		minitel.print(String(goodAnswers) + " bonnes réponses / " + String(MAX_QUESTIONS_PER_GAME));
-	if (goodAnswers == MAX_QUESTIONS_PER_GAME)
-		minitel.print("tout bon !");
+	else {
+		if (goodAnswers == 1)
+			minitel.print("1 bonne réponse / " + String(MAX_QUESTIONS_PER_GAME));
+		else {
+			if ((goodAnswers > 1) && (goodAnswers < MAX_QUESTIONS_PER_GAME))
+				minitel.print(String(goodAnswers) + " bonnes réponses / " + String(MAX_QUESTIONS_PER_GAME));
+			else {
+				if (goodAnswers == MAX_QUESTIONS_PER_GAME)
+					minitel.print("tout bon !");
+			}
+		}
+	}
 
 	if (badAnswers == 0) {
 		minitel.moveCursorXY(27, 7);
 		minitel.attributs(CARACTERE_BLEU);
 		minitel.print("aucune erreur !");
-	}
-	if (badAnswers == 1) {
-		minitel.moveCursorXY(27, 7);
-		minitel.attributs(CARACTERE_BLEU);
-		minitel.print("soit " + String(badAnswers) + " erreur");
-	}
-	if ((badAnswers > 1) && (badAnswers < 10)) {
-		minitel.moveCursorXY(26, 7);
-		minitel.attributs(CARACTERE_BLEU);
-		minitel.print("soit " + String(badAnswers) + " erreurs");
-	}
-	if ((badAnswers > 9) && (badAnswers < MAX_QUESTIONS_PER_GAME))
-	{
-		minitel.moveCursorXY(25, 7);
-		minitel.attributs(CARACTERE_BLEU);
-		minitel.print("soit " + String(badAnswers) + " erreurs");
-	}
-	if (badAnswers == MAX_QUESTIONS_PER_GAME)
-	{
-		minitel.moveCursorXY(31, 7);
-		minitel.attributs(CARACTERE_BLEU);
-		minitel.print("tout faux");
+	} else {
+		if (badAnswers == 1) {
+			minitel.moveCursorXY(27, 7);
+			minitel.attributs(CARACTERE_BLEU);
+			minitel.print("soit " + String(badAnswers) + " erreur");
+		} else {
+			if ((badAnswers > 1) && (badAnswers < 10)) {
+				minitel.moveCursorXY(26, 7);
+				minitel.attributs(CARACTERE_BLEU);
+				minitel.print("soit " + String(badAnswers) + " erreurs");
+			} else {
+				if ((badAnswers > 9) && (badAnswers < MAX_QUESTIONS_PER_GAME))
+				{
+					minitel.moveCursorXY(25, 7);
+					minitel.attributs(CARACTERE_BLEU);
+					minitel.print("soit " + String(badAnswers) + " erreurs");
+				} else {
+					if (badAnswers == MAX_QUESTIONS_PER_GAME)
+					{
+						minitel.moveCursorXY(31, 7);
+						minitel.attributs(CARACTERE_BLEU);
+						minitel.print("tout faux");
+					}
+				}
+			}
+		}
 	}
 
 	writeTextInBox(motto, 0, 12, 19, 3, CARACTERE_BLANC);
@@ -637,9 +738,9 @@ void TheDisplay::showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatu
 			}
 		}
 
-		String text = String(on2(hour())) + ":" +  String(on2(minute())) + ":" + String(on2(second())) + 
-		" a " + String(day()) + "/" + String(month()) + "/" + String(year()) +
-		" - Joueur : " + theInput.toUpperCase() + " - Score : " + String(points);
+		String text = String(day()) + "/" + String(month()) + "/" + String(year()) +
+					  " a " + String(on2(hour())) + ":" + String(on2(minute())) + ":" + String(on2(second())) +
+					  " - Joueur : " + gamer + " - Score : " + String(points);
 
-		generateQrCode("");
+		generateQrCode(text.toUpperCase());
 }

@@ -33,15 +33,17 @@ enum MINITEL_PAGE
 	PageSaisieNom,
 	PageQuestion,
 	PageAbandon,
-	PageResultat
+	PageResultat,
+	PageQRcode
 };
 
 class TheDisplay
 {
 	private:
-		QRCode qrcode;
-		void generateQrCode(String value);
-		String on2(uint8_t value);
+	  QRCode qrcode;
+	  void generateQrCode(String value);
+	  String lines[QR_CODE_SIZE];
+	  String on2(uint8_t value);
 	  String weekDays[7] = {SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY};
 	  String monthsName[12] = {JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER};
 	  void sendBytes(uint16_t size, const uint8_t bytes[]);
@@ -81,7 +83,7 @@ class TheDisplay
 	  bool displayChrono(uint8_t value);
 	  uint8_t getLevel();
 	  uint8_t getAnswer();
-	  void showResult(uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
+	  void showResult(String gamer, uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
 	  String getInputValue();
 	  bool isInputReady();
 

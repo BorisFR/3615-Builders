@@ -122,6 +122,7 @@ void loop()
 	///////////////////////////////////////////////////////////////////////////
 	case DisplayWelcome:
 		showScores = false;
+		//display.showPage(PageQRcode);
 		display.showPage(PageAccueil);
 		programStatus = WaitForKeypress;
 		//display.showPage(PageResultat);
@@ -337,14 +338,15 @@ void loop()
 	// on affiche le résultat
 	///////////////////////////////////////////////////////////////////////////
 	case DisplayResult:
+		Serial.println("page result");
 		// on affiche la page de résultat
 		display.showPage(PageResultat);
 		// on sauvegarde le résultat du joueur
 		theData.saveScore(gamerName, game.getPoints(), game.questionsID, game.answerinGame);
 		// et on affiche le résultat du joueur
-		display.showResult(game.getNumberOfGoodAnswers(), 
-			game.getNumberOfBadAnswers(), game.getPlayerStatus(), 
-			game.getPlayerMotto(), game.getPoints());
+		display.showResult(gamerName, game.getNumberOfGoodAnswers(),
+						   game.getNumberOfBadAnswers(), game.getPlayerStatus(),
+						   game.getPlayerMotto(), game.getPoints());
 		programStatus = WaitForEnding;
 		timeout = 0;
 		break;

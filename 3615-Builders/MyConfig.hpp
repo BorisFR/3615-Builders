@@ -91,5 +91,6 @@ enum PlayerStatus
 
 #define QR_CODE_VERSION 3
 #define QR_CODE_ERROR ECC_HIGH
+#define QR_CODE_SIZE 29
 
 #endif

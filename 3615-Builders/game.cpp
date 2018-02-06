@@ -36,15 +36,21 @@ bool Game::isAlreadyAsk(uint16_t indexQuestion)
 	{
 		if(questionsInGame[i] == indexQuestion)
 		{
+#ifdef DEBUG
+			Serial.print(" .. ");
+#endif
 			return true;
 		}
 	}
+#ifdef DEBUG
+	Serial.print(" . ");
+#endif
 	return false;
 }
 
 void Game::prepareOneQuestion()
 {
-	Serial.println("Tirage aléatoire d'une question");
+	Serial.println("Question : " + String(currentQuestion) + " - Tirage aléatoire");
 	// si le joueur enchaîne les bonnes réponses
 	// on passe au niveau supérieur
 	if (countSuccessiveGood >= GOOD_ANSWER_TO_LEVEL_UP && currentLevel < NUMBER_QCM_LEVEL)
@@ -75,6 +81,7 @@ void Game::prepareOneQuestion()
 	indexReal = questionByLevel[currentLevel - 1][index];
 #ifdef DEBUG
 	Serial.print("[" + String(indexReal) + "] ");
+	Serial.send_now();
 #endif
 	// si la question a déjà été posée
 	while (isAlreadyAsk(indexReal))
@@ -87,6 +94,7 @@ void Game::prepareOneQuestion()
 		indexReal = questionByLevel[currentLevel - 1][index];
 #ifdef DEBUG
 		Serial.print("[" + String(indexReal) + "] ");
+		Serial.send_now();
 #endif
 	}
 #ifdef DEBUG
@@ -129,9 +137,12 @@ void Game::prepareOneQuestion()
 
 	timeToAnswer = 0;
 
-		// TODO: bosser avec qcmUUID
-		// compter cmbien de fois la question est sortie
-		// et le nombre de bonnes et fausses réponses
+#ifdef DEBUG
+	Serial.send_now();
+#endif
+	// TODO: bosser avec qcmUUID
+	// compter cmbien de fois la question est sortie
+	// et le nombre de bonnes et fausses réponses
 }
 
 void Game::startNewGame(uint8_t level, uint16_t numberQuestions)
@@ -157,7 +168,7 @@ void Game::startNewGame(uint8_t level, uint16_t numberQuestions)
 
 void Game::nextQuestion()
 {
-	if(currentQuestion == currentMaxQuestions)
+	if((currentQuestion + 1) == currentMaxQuestions)
 	{
 		return;
 	}
@@ -167,8 +178,10 @@ void Game::nextQuestion()
 
 bool Game::isGameFinish()
 {
-	if(currentQuestion == currentMaxQuestions)
+	if((currentQuestion + 1) == currentMaxQuestions)
 	{
+		Serial.println("Game end");
+		Serial.send_now();
 		return true;
 	}
 	return false;
@@ -191,7 +204,7 @@ void Game::playAnswer(uint8_t answer)
 #endif
 		points += (2 * currentLevel) + ptsDelay;
 #ifdef DEBUG
-		Serial.println("** New score:" + String(points));
+		Serial.println(" ** New score:" + String(points));
 #endif
 	}
 	else
@@ -202,6 +215,9 @@ void Game::playAnswer(uint8_t answer)
 		countSuccessiveBad++;
 		countSuccessiveGood = 0;
 	}
+#ifdef DEBUG
+	Serial.send_now();
+#endif
 }
 
 bool Game::isAnswerGood()
@@ -265,13 +281,13 @@ PlayerStatus Game::getPlayerStatus()
 {
 	if (goodAnswers == 0)
 		return Human;
-	if (goodAnswers < 6)
+	if (goodAnswers < (MAX_QUESTIONS_PER_GAME / 3))
 		return Sensitif;
-	if (goodAnswers < 11)
+	if (goodAnswers < (MAX_QUESTIONS_PER_GAME / 2))
 		return Initie;
-	if (goodAnswers < 15)
+	if (goodAnswers < (2 * MAX_QUESTIONS_PER_GAME / 3))
 		return Padawan;
-	if (goodAnswers < 19)
+	if (goodAnswers < (MAX_QUESTIONS_PER_GAME - 1))
 		return Chevalier;
 	return GrandMaitre;
 }
@@ -280,13 +296,13 @@ String Game::getPlayerMotto()
 {
 	if (goodAnswers == 0)
 		return HUMAN_MOTTO;
-	if (goodAnswers < 6)
+	if (goodAnswers < (MAX_QUESTIONS_PER_GAME / 3))
 		return SENSITIF_MOTTO;
-	if (goodAnswers < 11)
+	if (goodAnswers < (MAX_QUESTIONS_PER_GAME / 2))
 		return INITIE_MOTTO;
-	if (goodAnswers < 15)
+	if (goodAnswers < (2 * MAX_QUESTIONS_PER_GAME / 3))
 		return PADAWAN_MOTTO;
-	if (goodAnswers < 19)
+	if (goodAnswers < (MAX_QUESTIONS_PER_GAME - 1))
 		return CHEVALIER_MOTTO;
 	return MASTER_MOTTO;
 }

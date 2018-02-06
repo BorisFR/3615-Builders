@@ -18,7 +18,7 @@
 // normalement, pas besoin de toucher en dessous
 
 #define CATEGORY_CINEMA "Cinéma"
-#define CATEGORY_DROIDE "Cinéma"
+#define CATEGORY_DROIDE "Droïde"
 #define CATEGORY_KNOWLEDGE "Connaissance"
 #define CATEGORY_HISTORY "Histoire"
 
@@ -61,7 +61,7 @@ enum PlayerStatus
 };
 
 // combien de questions pour une session de jeu
-#define MAX_QUESTIONS_PER_GAME 20
+#define MAX_QUESTIONS_PER_GAME 10
 
 // combien de bonnes réponses successives pour passer au niveau supérieur
 #define GOOD_ANSWER_TO_LEVEL_UP 3

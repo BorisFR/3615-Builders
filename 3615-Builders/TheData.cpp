@@ -157,7 +157,7 @@ String TheData::on2(uint8_t value)
 	return String(value);
 }
 
-void TheData::saveScore(String gamertag, uint16_t points)
+void TheData::saveScore(String gamertag, uint16_t points, String questions[MAX_QUESTIONS_PER_GAME], uint8_t answers[MAX_QUESTIONS_PER_GAME])
 {
 	if (!isStatusOk)
 		return;
@@ -178,6 +178,10 @@ void TheData::saveScore(String gamertag, uint16_t points)
 					+ String(on2(minute(dateTime))) + String(on2(second(dateTime))) 
 					+ "|" + gamertag 
 					+ "|" + String(points));
+		for(uint8_t i = 0; i < MAX_QUESTIONS_PER_GAME; i++)
+		{
+			file.print("|" + questions[i] + "|" + String(answers[i]));
+		}
 		file.close();
 	}
 	else

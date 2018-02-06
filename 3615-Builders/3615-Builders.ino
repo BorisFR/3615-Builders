@@ -339,7 +339,7 @@ void loop()
 		// on affiche la page de résultat
 		display.showPage(PageResultat);
 		// on sauvegarde le résultat du joueur
-		theData.saveScore(gamerName, game.getPoints());
+		theData.saveScore(gamerName, game.getPoints(), game.questionsID, game.answerinGame);
 		// et on affiche le résultat du joueur
 		display.showResult(game.getNumberOfGoodAnswers(), 
 			game.getNumberOfBadAnswers(), game.getPlayerStatus(), 

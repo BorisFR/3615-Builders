@@ -95,6 +95,7 @@ void Game::prepareOneQuestion()
 	// la question est choisie
 	// on mémorise le fait que l'on ait posé cette question au joueur
 	questionsInGame[currentQuestion] = indexReal;
+	questionsID[currentLevel] = qcmUUID[indexReal];
 	switch(random(3))
 	{
 		case 0:
@@ -179,6 +180,7 @@ void Game::playAnswer(uint8_t answer)
 
 	if (answer == currentGoodAnswer)
 	{
+		answerinGame[currentQuestion] = 1;
 		goodAnswers++;
 		giveGoodAnswer = true;
 		countSuccessiveGood++;
@@ -194,6 +196,7 @@ void Game::playAnswer(uint8_t answer)
 	}
 	else
 	{
+		answerinGame[currentQuestion] = 1;
 		badAnswers++;
 		giveGoodAnswer = false;
 		countSuccessiveBad++;

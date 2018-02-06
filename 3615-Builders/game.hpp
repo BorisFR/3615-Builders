@@ -23,7 +23,6 @@ class Game
 		String answer1;
 		String answer2;
 		String answer3;
-		int16_t questionsInGame[MAX_QUESTIONS_PER_GAME];
 		uint16_t indexReal;
 		uint8_t countSuccessiveGood;
 		uint8_t countSuccessiveBad;
@@ -60,6 +59,10 @@ class Game
 		PlayerStatus getPlayerStatus();
 		String getPlayerMotto();
 		uint16_t getPoints();
+
+		int16_t questionsInGame[MAX_QUESTIONS_PER_GAME];
+		uint8_t answerinGame[MAX_QUESTIONS_PER_GAME];
+		String questionsID[MAX_QUESTIONS_PER_GAME];
 
 };
 

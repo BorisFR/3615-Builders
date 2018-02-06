@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <TimeLib.h>
 #include <SD.h>
+#include "MyConfig.hpp"
 
 class TheData
 {
@@ -20,7 +21,7 @@ class TheData
 	public:
 		void setup();
 		void listFiles();
-		void saveScore(String gamertag, uint16_t points);
+		void saveScore(String gamertag, uint16_t points, String questions[MAX_QUESTIONS_PER_GAME], uint8_t answers[MAX_QUESTIONS_PER_GAME]);
 
 };
 

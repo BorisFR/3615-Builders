@@ -1,5 +1,26 @@
 #include "TheData.hpp"
 
+time_t dateTime;
+
+void formatDateTime(uint16_t* date, uint16_t* time) {
+	uint16_t y;
+	uint8_t m, d, h, min, s;
+
+	// User gets date and time from GPS or real-time clock here
+	y = year(dateTime);
+	m = month(dateTime);
+	d = day(dateTime);
+	h = hour(dateTime);
+	min = minute(dateTime);
+	s = second(dateTime);
+
+	// return date using FAT_DATE macro to format fields
+	*date = FAT_DATE(y, m, d);
+
+	// return time using FAT_TIME macro to format fields
+	*time = FAT_TIME(h, min, s);
+}
+   
 void TheData::printDirectory(File dir, int numTabs)
 {
 	while (true)
@@ -48,6 +69,8 @@ void TheData::setup()
 	v = 48;
 	for (uint8_t i = 52; i <= 61; i++)
 		convertValue[i] = v++;
+	dateTime = now();
+	SdFile::dateTimeCallback(formatDateTime);
 	Sd2Card card;
 	if(!card.init(SPI_HALF_SPEED, BUILTIN_SDCARD))
 	{
@@ -138,10 +161,17 @@ void TheData::saveScore(String gamertag, uint16_t points)
 {
 	if (!isStatusOk)
 		return;
-	time_t dateTime = now();
-	String filename = "G" + String(year(dateTime) - 2000) + convertFrom(month(dateTime) - 1) + convertFrom(day(dateTime) - 1) + convertFrom(hour(dateTime)) + convertFrom(minute(dateTime)) + convertFrom(second(dateTime)) + ".txt";
+	dateTime = now();
+	String directory = String(year(dateTime)) + String(on2(month(dateTime))) + String(on2(day(dateTime)));
+	if(!SD.exists(directory.c_str()))
+	{
+		Serial.println("[SD] create directory " + directory);
+		SD.mkdir(directory.c_str());
+	}
+	String filename = directory + "/G" + String(year(dateTime) - 2000) + convertFrom(month(dateTime) - 1) + convertFrom(day(dateTime) - 1) + convertFrom(hour(dateTime)) + convertFrom(minute(dateTime)) + convertFrom(second(dateTime)) + ".txt";
 	Serial.println("[SD] " + filename);
 	File file = SD.open(filename.c_str(), FILE_WRITE);
+	
 	if (file)
 	{
 		file.print(String(year(dateTime)) + String(on2(month(dateTime))) + String(on2(day(dateTime))) + String(on2(hour(dateTime))) 

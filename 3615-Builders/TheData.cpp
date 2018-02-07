@@ -138,6 +138,7 @@ void TheData::setup()
 	isStatusOk = true;
 	Serial.println("[SD] initialization done.");
 	listFiles();
+	loadScores();
 	Serial.println("[SD] OK");
 }
 
@@ -148,6 +149,42 @@ void TheData::listFiles()
 	File root = SD.open("/");
 	printDirectory(root, 0);
 	Serial.println("[SD] list done");
+}
+
+void TheData::loadScores()
+{
+	Serial.println("[SD] loading scores...");
+	dateTime = now();
+	String directory = String(year(dateTime)) + String(on2(month(dateTime))) + String(on2(day(dateTime)));
+	if(!SD.exists(directory.c_str()))
+	{
+		Serial.println("[SD] no score to load");
+		return;
+	}
+	directory + "/";
+	File root = SD.open(directory.c_str());
+
+	while (true)
+	{
+		File entry = root.openNextFile();
+		if (!entry) // no more files
+			break;
+		if (!entry.isDirectory())
+		{
+			Serial.print("Processing: " + String(entry.name()));
+			// on extrait la data
+			String timestamp = entry.readStringUntil('|', 120);
+			String gamertag = entry.readStringUntil('|', 120);
+			uint16_t points = entry.readString(120).toInt();
+			insertInBoard(gamertag, points);
+		}
+		entry.close();
+	}
+}
+
+int8_t TheData::insertInBoard(String name, uint16_t points)
+{
+	return -1;
 }
 
 String TheData::on2(uint8_t value)

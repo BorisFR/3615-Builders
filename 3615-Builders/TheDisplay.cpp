@@ -351,7 +351,8 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			generateQrCode(text.toUpperCase());
 
 			Serial.println("[QRcode]" + String(qrcode.size) + "x" + String(qrcode.size) + " sending to Minitel");
-			/*uint8_t y = 0;
+			/* QRcode en tailee 1:1
+			uint8_t y = 0;
 			while (y < qrcode.size)
 			{
 				minitel.moveCursorXY(3, 8 + (y / 3));

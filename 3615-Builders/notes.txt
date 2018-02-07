@@ -84,6 +84,28 @@ et
 		car = 'C';
 		break;
 
+changement dans la lib qrcode
+fonction getAlphanumeric
+
+ajout de        
+		case 'À' : return ('A' - 'A' + 10);
+        case 'Â' : return ('A' - 'A' + 10);
+        case 'Ä' : return ('A' - 'A' + 10);
+        case 'È' : return ('E' - 'A' + 10);
+        case 'É' : return ('E' - 'A' + 10);
+        case 'Ê' : return ('E' - 'A' + 10);
+        case 'Ë' : return ('E' - 'A' + 10);
+        case 'Î' : return ('I' - 'A' + 10);
+        case 'Ï' : return ('I' - 'A' + 10);
+        case 'Ô' : return ('O' - 'A' + 10);
+        case 'Ö' : return ('O' - 'A' + 10);
+        case 'Ù' : return ('U' - 'A' + 10);
+        case 'Û' : return ('U' - 'A' + 10);
+        case 'Ü' : return ('U' - 'A' + 10);
+        case 'Ç' : return ('C' - 'A' + 10);
+    default:
+        return 36;
+
 
 
 1/ Écran d'accueil Builders / Star Wars

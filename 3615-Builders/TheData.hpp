@@ -16,10 +16,12 @@ class TheData
 		void printDirectory(File dir, int numTabs);
 		String on2(uint8_t value);
 		String convertFrom(uint8_t value);
+		int8_t insertInBoard(String name, uint16_t points);
 
 
 	public:
 		void setup();
+		void loadScores();
 		void listFiles();
 		void saveScore(String gamertag, uint16_t points, String questions[MAX_QUESTIONS_PER_GAME], uint8_t answers[MAX_QUESTIONS_PER_GAME]);
 

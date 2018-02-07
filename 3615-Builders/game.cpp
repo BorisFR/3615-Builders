@@ -2,7 +2,7 @@
 
 void Game::setup()
 {
-	randomSeed(analogRead(0));
+	randomSeed(now());
 	parseQCM();
 }
 

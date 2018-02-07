@@ -3,6 +3,7 @@
 #define GAME_HPP
 
 #include <Arduino.h>
+#include <TimeLib.h>
 #include "Qcm.hpp"
 #include "MyConfig.hpp"
 #include "ElapsedMillis.hpp"

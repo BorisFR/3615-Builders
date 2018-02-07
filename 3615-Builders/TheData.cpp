@@ -114,20 +114,20 @@ void TheData::setup()
 		Serial.print("[SD] Volume size (bytes): ");
 		Serial.println(volumesize * 512); // SD card blocks are always 512 bytes
 	}
-	Serial.print("[SD] Volume size (Kbytes): ");
 	volumesize /= 2;
-	Serial.println(volumesize);
-	Serial.print("[SD] Volume size (Mbytes): ");
+	Serial.println("[SD] Volume size: " + String(volumesize) + " Kb");
 	volumesize /= 1024;
-	Serial.println(volumesize);
+	Serial.println("[SD] Volume size: " + String(volumesize) + " Mb");
+	volumesize /= 1024;
+	Serial.println("[SD] Volume size: " + String(volumesize) + " Gb");
 
-	SdFile root;
+	/*SdFile root;
 	Serial.println("[SD] Files found on the card (name, date and size in bytes): ");
 	root.openRoot(volume);
 
 	// list all files in the card with date and size
 	root.ls(LS_R | LS_DATE | LS_SIZE);
-	root.close();
+	root.close();*/
 
 	if (!SD.begin(BUILTIN_SDCARD))
 	{
@@ -137,7 +137,7 @@ void TheData::setup()
 	}
 	isStatusOk = true;
 	Serial.println("[SD] initialization done.");
-	listFiles();
+	//listFiles();
 	loadScores();
 	Serial.println("[SD] OK");
 }
@@ -153,6 +153,8 @@ void TheData::listFiles()
 
 void TheData::loadScores()
 {
+	if (!isStatusOk)
+		return;
 	Serial.println("[SD] loading scores...");
 	dateTime = now();
 	String directory = String(year(dateTime)) + String(on2(month(dateTime))) + String(on2(day(dateTime)));
@@ -171,12 +173,13 @@ void TheData::loadScores()
 			break;
 		if (!entry.isDirectory())
 		{
-			Serial.print("Processing: " + String(entry.name()));
+			Serial.print("Processing: " + String(entry.name()) + " ");
 			// on extrait la data
 			String timestamp = entry.readStringUntil('|', 120);
 			String gamertag = entry.readStringUntil('|', 120);
-			uint16_t points = entry.readString(120).toInt();
+			uint16_t points = entry.readStringUntil('|', 120).toInt();
 			insertInBoard(gamertag, points);
+			Serial.println(String(points) + " points by " + gamertag);
 		}
 		entry.close();
 	}

@@ -38,6 +38,8 @@ enum ProgramStatus
 	DisplayQuestion,
 	WaitForAnswer,
 	DisplayResult,
+	WaitForQRcode,
+	DisplayQRcode,
 	WaitForEnding,
 	DisplaySorry
 } programStatus;
@@ -117,12 +119,13 @@ void loop()
 		showScores = true;
 		programStatus = WaitForKeypress;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
+
 	// on affiche la page d'accueil
 	///////////////////////////////////////////////////////////////////////////
 	case DisplayWelcome:
 		showScores = false;
-		//display.showPage(PageQRcode);
 		display.showPage(PageAccueil);
 		programStatus = WaitForKeypress;
 		//display.showPage(PageResultat);
@@ -134,6 +137,7 @@ void loop()
 		//display.showResult(0, 20, Human, HUMAN_MOTTO);
 		//programStatus = WaitForEnding;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
 
 	// attente que quelqu'un se manifeste...
@@ -153,6 +157,7 @@ void loop()
 		// TODO: gérer le code secret pour l'écran de configuration
 		if (display.isKeyPress())
 		{
+			display.clearKeyboard();
 			programStatus = DisplayEnterName;
 			break;
 		}
@@ -164,6 +169,7 @@ void loop()
 		display.showPage(PageConfiguration);
 		programStatus = EntryConfiguration;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
 
 	// les saisies de l'écran de config
@@ -178,6 +184,7 @@ void loop()
 		// touche annulation pressée
 		if (display.isCancel())
 		{
+			display.clearKeyboard();
 			programStatus = DisplayWelcome;
 			break;
 		}
@@ -190,6 +197,7 @@ void loop()
 		display.showPage(PageSaisieNom);
 		programStatus = WaitForName;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
 
 	// les saisies de l'écran de config
@@ -201,6 +209,7 @@ void loop()
 		}
 		if(display.isInputReady())
 		{
+			display.clearKeyboard();
 			gamerName = display.getInputValue();
 			programStatus = DisplayChooseLevel;
 			break;
@@ -210,6 +219,7 @@ void loop()
 		// touche annulation pressée
 		if (display.isCancel())
 		{
+			display.clearKeyboard();
 			programStatus = DisplayWelcome;
 			break;
 		}
@@ -221,6 +231,7 @@ void loop()
 		display.showPage(PageChoixNiveau);
 		programStatus = WaitForLevel;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
 
 	// attente du choix de niveau
@@ -235,6 +246,7 @@ void loop()
 		// touche annulation pressée
 		if (display.isCancel())
 		{
+			display.clearKeyboard();
 			programStatus = DisplayWelcome;
 			break;
 		}
@@ -243,6 +255,7 @@ void loop()
 		// oui !
 		if (playerLevel > 0)
 		{
+			display.clearKeyboard();
 			// on lance le jeu
 			programStatus = InitNewGame;
 			break;
@@ -273,6 +286,7 @@ void loop()
 		// et on va attendre la réponse du joueur
 		programStatus = WaitForAnswer;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
 
 	// on attend la réponse du joueur
@@ -288,6 +302,7 @@ void loop()
 		// touche annulation pressée, il abandonne le jeu
 		if (display.isCancel())
 		{
+			display.clearKeyboard();
 			programStatus = DisplayWelcome;
 			break;
 		}
@@ -296,6 +311,7 @@ void loop()
 		// oui :)
 		if (playerAnswer > 0)
 		{
+			display.clearKeyboard();
 			// on joue sa réponse
 			game.playAnswer(playerAnswer);
 			#ifdef DEBUG
@@ -307,8 +323,6 @@ void loop()
 				display.bip();
 			}
 			#endif
-			// on passe à la question suivante
-			game.nextQuestion();
 			// est-ce la fin du jeu ?
 			if (game.isGameFinish())
 			{
@@ -316,7 +330,9 @@ void loop()
 				programStatus = DisplayResult;
 				break;
 			}
-			// non ce n'est pas terminé, on affiche la nouvelle question
+			// on passe à la question suivante
+			game.nextQuestion();
+			// on affiche la nouvelle question
 			programStatus = DisplayQuestion;
 			break;
 		}
@@ -332,6 +348,7 @@ void loop()
 		// avec un délai plus court
 		timeout = 2 * SECONDS_TO_ANSWER / 3;
 		programStatus = WaitForEnding;
+		display.clearKeyboard();
 		break;
 
 	// le joueur a répondu à toutes les questions
@@ -347,8 +364,45 @@ void loop()
 		display.showResult(gamerName, game.getNumberOfGoodAnswers(),
 						   game.getNumberOfBadAnswers(), game.getPlayerStatus(),
 						   game.getPlayerMotto(), game.getPoints());
+	   if(display.onPodium())
+			programStatus = WaitForQRcode;
+		else
+			programStatus = WaitForEnding;
+		timeout = 0;
+		display.clearKeyboard();
+		break;
+
+	// on attend l'appui sur une touche
+	// ou le timeout
+	// pour afficher le QR code
+	///////////////////////////////////////////////////////////////////////////
+	case WaitForQRcode:
+		if (timeout > SECONDS_TO_ANSWER)
+		{
+			programStatus = DisplayQRcode;
+			break;
+		}
+		if (display.isCancel())
+		{
+			display.clearKeyboard();
+			programStatus = DisplayQRcode;
+			break;
+		}
+		if (display.isKeyPress())
+		{
+			display.clearKeyboard();
+			timeout = 0;
+			break;
+		}
+		break;
+
+	// on affiche le QRcode
+	///////////////////////////////////////////////////////////////////////////
+	case DisplayQRcode:
+		display.showPage(PageQRcode);
 		programStatus = WaitForEnding;
 		timeout = 0;
+		display.clearKeyboard();
 		break;
 
 	// on attend l'appui sur une touche
@@ -363,11 +417,13 @@ void loop()
 		}
 		if (display.isCancel())
 		{
+			display.clearKeyboard();
 			programStatus = DisplayHallOfFame;
 			break;
 		}
 		if (display.isKeyPress())
 		{
+			display.clearKeyboard();
 			timeout = 0;
 			break;
 		}

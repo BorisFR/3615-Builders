@@ -71,6 +71,9 @@ class TheDisplay
 	  uint16_t scores[MAX_SCORES];
 	  String gamertag[MAX_SCORES];
 
+	  String gamerName;
+	  uint16_t gamerPoints;
+
 	public:
 	  void setup();
 	  void loop();
@@ -79,6 +82,7 @@ class TheDisplay
 	  void showPage(MINITEL_PAGE page);
 	  bool isKeyPress();
 	  bool isCancel();
+	  void clearKeyboard();
 	  void showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3);
 	  bool displayChrono(uint8_t value);
 	  uint8_t getLevel();
@@ -86,6 +90,7 @@ class TheDisplay
 	  void showResult(String gamer, uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
 	  String getInputValue();
 	  bool isInputReady();
+	  bool onPodium();
 
 };
 

@@ -75,6 +75,7 @@ class TheDisplay
 	  uint16_t gamerPoints;
 	  bool showQRcode;
 	  uint8_t playerOnPodium;
+	  uint8_t midi;
 
 	public:
 		void setup();
@@ -98,7 +99,7 @@ class TheDisplay
 		void setQRcodeDisplay(bool value);
 		void setHiScore(uint8_t place, String name, uint16_t points);
 		void setPlayerPodium(uint8_t value);
-
+		void setMidi(uint8_t value);
 };
 
 #endif

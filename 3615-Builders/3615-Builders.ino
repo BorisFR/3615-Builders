@@ -24,6 +24,7 @@ String inputSecret;
 String secretCode = SECRETCODE;
 bool showQRcode = true; 
 uint8_t showQRcodeFor = MAX_PODIUM_PLAYER;
+uint8_t midi = 13;
 
 // les différents états du programme
 ///////////////////////////////////////////////////////////////////////////////
@@ -97,12 +98,16 @@ void setup()
 	theData.setup();
 	game.setup();
 	display.setup();
-	for(uint8_t i = 0; i < MAX_SCORES; i++)
+	if (theData.hiscoresPoints[0] > 0)
 	{
-		display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
+		for (uint8_t i = 0; i < MAX_SCORES; i++)
+		{
+			display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
+		}
 	}
 	display.setQRcodeDisplay(showQRcode);
 	display.setPlayerPodium(showQRcodeFor);
+	display.setMidi(midi);
 	showScores = false;
 	programStatus = DisplayWelcome;
 
@@ -230,13 +235,35 @@ void loop()
 						display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
 					}
 					break;
+				case 'a':
+					theData.loadScoresAM(midi);
+					for (uint8_t i = 0; i < MAX_SCORES; i++)
+					{
+						display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
+					}
+					break;
+				case 'p':
+					theData.loadScoresPM(midi);
+					for (uint8_t i = 0; i < MAX_SCORES; i++)
+					{
+						display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
+					}
+					break;
+				case 'h':
+					midi++;
+					if(midi > 14)
+						midi = 11;
+					display.setMidi(midi);
+					display.clearKeyboard();
+					programStatus = DisplayConfiguration;
+					break;
 				case 'q':
 					showQRcode = !showQRcode;
 					display.setQRcodeDisplay(showQRcode);
 					display.clearKeyboard();
 					programStatus = DisplayConfiguration;
 					break;
-				case 'p':
+				case 'j':
 					showQRcodeFor++;
 					if(showQRcodeFor > MAX_PODIUM_PLAYER)
 						showQRcodeFor = 1;

@@ -22,6 +22,8 @@ class TheData
 	public:
 		void setup();
 		void loadScores();
+		void loadScoresAM(uint8_t midi);
+		void loadScoresPM(uint8_t midi);
 		void listFiles();
 		void saveScore(String gamertag, uint16_t points, String questions[MAX_QUESTIONS_PER_GAME], uint8_t answers[MAX_QUESTIONS_PER_GAME]);
 

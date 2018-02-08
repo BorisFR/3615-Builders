@@ -260,6 +260,32 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			minitel.moveCursorXY(1, 10);
 			minitel.attributs(CARACTERE_VERT);
 			minitel.attributs(INVERSION_FOND);
+			minitel.print("A");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" Charger les hi-scores du matin");
+
+			minitel.moveCursorXY(1, 11);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
+			minitel.print("P");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" Charger les hi-scores de l'après midi");
+
+			minitel.moveCursorXY(1, 12);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
+			minitel.print("H");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" Matin /après midi à ");
+			minitel.print(String(midi));
+			minitel.print(":00");
+
+			minitel.moveCursorXY(1, 13);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
 			minitel.print("Q");
 			minitel.attributs(FOND_NORMAL);
 			minitel.attributs(CARACTERE_BLANC);
@@ -269,14 +295,14 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			else
 				minitel.print("non");
 
-			minitel.moveCursorXY(1, 11);
+			minitel.moveCursorXY(1, 14);
 			minitel.attributs(CARACTERE_VERT);
 			minitel.attributs(INVERSION_FOND);
-			minitel.print("P");
+			minitel.print("J");
 			minitel.attributs(FOND_NORMAL);
 			minitel.attributs(CARACTERE_BLANC);
 			minitel.print(" QRcode classement joueurs : " + String(playerOnPodium));
-			minitel.moveCursorXY(3, 12);
+			minitel.moveCursorXY(3, 15);
 			minitel.attributs(CARACTERE_VERT);
 			minitel.print("(QRcode non affiché pour les autres)");
 
@@ -847,4 +873,9 @@ void TheDisplay::setHiScore(uint8_t place, String name, uint16_t points)
 void TheDisplay::setPlayerPodium(uint8_t value)
 {
 	playerOnPodium = value;
+}
+
+void TheDisplay::setMidi(uint8_t value)
+{
+	midi = value;
 }

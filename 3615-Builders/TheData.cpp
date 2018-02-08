@@ -61,13 +61,13 @@ String TheData::convertFrom(uint8_t value)
 void TheData::setup()
 {
 	uint8_t v = 65;
-	for (uint8_t i = 0; i <= 25; i++)
+	for (uint8_t i = 0; i <= 25; i++) // A..Z
 		convertValue[i] = v++;
 	v = 97;
-	for (uint8_t i = 26; i <= 51; i++)
+	for (uint8_t i = 26; i <= 51; i++) // a..z
 		convertValue[i] = v++;
 	v = 48;
-	for (uint8_t i = 52; i <= 61; i++)
+	for (uint8_t i = 52; i <= 61; i++) // 0..9
 		convertValue[i] = v++;
 	dateTime = now();
 	SdFile::dateTimeCallback(formatDateTime);
@@ -185,6 +185,93 @@ void TheData::loadScores()
 			uint16_t points = entry.readStringUntil('|', 120).toInt();
 			insertInBoard(gamertag, points);
 			Serial.println(String(points) + " points by " + gamertag);
+		}
+		entry.close();
+	}
+	Serial.println("[SD] loading scores done");
+}
+
+void TheData::loadScoresAM(uint8_t midi)
+{
+	for (uint8_t i = 0; i < MAX_SCORES; i++)
+	{
+		hiscoresName[i] = "";
+		hiscoresPoints[i] = 0;
+	}
+	if (!isStatusOk)
+		return;
+	Serial.println("[SD] loading scores...");
+	dateTime = now();
+	String directory = String(year(dateTime)) + String(on2(month(dateTime))) + String(on2(day(dateTime)));
+	if (!SD.exists(directory.c_str()))
+	{
+		Serial.println("[SD] no score to load");
+		return;
+	}
+	directory + "/";
+	File root = SD.open(directory.c_str());
+
+	while (true)
+	{
+		File entry = root.openNextFile();
+		if (!entry) // no more files
+			break;
+		if (!entry.isDirectory())
+		{
+			Serial.print("Processing: " + String(entry.name()) + " ");
+			String h = String(entry.name()).substring(5, 6);
+			if(h < convertFrom(midi)) {
+				// on extrait la data
+				String timestamp = entry.readStringUntil('|', 120);
+				String gamertag = entry.readStringUntil('|', 120);
+				uint16_t points = entry.readStringUntil('|', 120).toInt();
+				insertInBoard(gamertag, points);
+				Serial.println(String(points) + " points by " + gamertag);
+			}
+		}
+		entry.close();
+	}
+	Serial.println("[SD] loading scores done");
+}
+
+void TheData::loadScoresPM(uint8_t midi)
+{
+	for (uint8_t i = 0; i < MAX_SCORES; i++)
+	{
+		hiscoresName[i] = "";
+		hiscoresPoints[i] = 0;
+	}
+	if (!isStatusOk)
+		return;
+	Serial.println("[SD] loading scores...");
+	dateTime = now();
+	String directory = String(year(dateTime)) + String(on2(month(dateTime))) + String(on2(day(dateTime)));
+	if (!SD.exists(directory.c_str()))
+	{
+		Serial.println("[SD] no score to load");
+		return;
+	}
+	directory + "/";
+	File root = SD.open(directory.c_str());
+
+	while (true)
+	{
+		File entry = root.openNextFile();
+		if (!entry) // no more files
+			break;
+		if (!entry.isDirectory())
+		{
+			Serial.print("Processing: " + String(entry.name()) + " ");
+			String h = String(entry.name()).substring(5, 6);
+			if (h >= convertFrom(midi))
+			{
+				// on extrait la data
+				String timestamp = entry.readStringUntil('|', 120);
+				String gamertag = entry.readStringUntil('|', 120);
+				uint16_t points = entry.readStringUntil('|', 120).toInt();
+				insertInBoard(gamertag, points);
+				Serial.println(String(points) + " points by " + gamertag);
+			}
 		}
 		entry.close();
 	}

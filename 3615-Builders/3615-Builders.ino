@@ -100,6 +100,7 @@ void setup()
 	{
 		display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
 	}
+	display.setQRcodeDisplay(showQRcode);
 	display.setPlayerPodium(showQRcodeFor);
 	showScores = false;
 	programStatus = DisplayWelcome;
@@ -170,14 +171,17 @@ void loop()
 		{
 			char c = display.getTextKey();
 			inputSecret += c;
+			Serial.print(c);
 			if(inputSecret == secretCode.substring(0, inputSecret.length()))
 			{
+				Serial.print(".");
 				if(inputSecret.length() == secretCode.length())
 				{
 					display.clearKeyboard();
 					programStatus = DisplayConfiguration;
 					break;
 				}
+				break;
 			}
 			display.clearKeyboard();
 			programStatus = DisplayEnterName;

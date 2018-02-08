@@ -5,12 +5,9 @@ Minitel minitel(SERIAL_MINITEL);
 
 void TheDisplay::generateQrCode(String value)
 {
-	Serial.println("[QRcode]");
     uint8_t qrcodeData[qrcode_getBufferSize(QR_CODE_VERSION)];
 	Serial.println("[QRcode] generating");
 	qrcode_initText(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
-	//qrcode_initBytes(&qrcode, qrcodeData, QR_CODE_VERSION, 0, value.c_str());
-	//Serial.println("[QRcode] sending to serial");
 	for (uint8_t y = 0; y < qrcode.size; y++)
 	{
 		lines[y] = "";
@@ -18,8 +15,7 @@ void TheDisplay::generateQrCode(String value)
 			//Serial.print(qrcode_getModule(&qrcode, x, y) ? "\u2588": " ");
 			lines[y] += qrcode_getModule(&qrcode, x, y) ? "1" : "0";
 		}
-		Serial.println(lines[y]);
-		//Serial.print("\n");
+		//Serial.println(lines[y]);
 	}
 }
 
@@ -413,7 +409,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 
 			String text = String(day()) + "/" + String(month()) + "/" + String(year()) +
 						  " a " + String(on2(hour())) + ":" + String(on2(minute())) + ":" + String(on2(second())) +
-						  " - Joueur : " + gamerName + " - Score : " + String(gamerPoints);
+						  " " + gamerName + " " + String(gamerPoints);
 
 			writeCenter(text, 24, CARACTERE_ROUGE, false);
 
@@ -453,10 +449,10 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			while (y < qrcode.size)
 			{
 				uint8_t posX = 7;
-				Serial.print(String(y) + ":");
+				//Serial.print(String(y) + ":");
 				for (uint8_t x = 0; x < qrcode.size; x += 2)
 				{
-					Serial.print(String(x) + " ");
+					//Serial.print(String(x) + " ");
 					minitel.moveCursorXY(posX + x, posY);
 					if (x == 0) {
 						minitel.graphicMode();
@@ -493,7 +489,7 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 					minitel.graphic(gfx3);
 					minitel.graphic(gfx4);
 				}
-				Serial.println();
+				//Serial.println();
 				posY += 2;
 				y += 3;
 			}

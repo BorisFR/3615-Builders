@@ -263,7 +263,11 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			minitel.print("Q");
 			minitel.attributs(FOND_NORMAL);
 			minitel.attributs(CARACTERE_BLANC);
-			minitel.print(" Affiche le QRcode : " + String(showQRcode));
+			minitel.print(" Affiche le QRcode : ");
+			if(showQRcode)
+				minitel.print("oui");
+			else
+				minitel.print("non");
 
 			minitel.moveCursorXY(1, 11);
 			minitel.attributs(CARACTERE_VERT);

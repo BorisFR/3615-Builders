@@ -94,6 +94,7 @@ void setup()
 	debug("3615 Builders starting...");
 #endif
 	digitalClockDisplay();
+	theData.setup();
 	game.setup();
 	display.setup();
 	for(uint8_t i = 0; i < MAX_SCORES; i++)
@@ -105,7 +106,6 @@ void setup()
 	showScores = false;
 	programStatus = DisplayWelcome;
 
-	theData.setup();
 	//theData.saveScore("Stéphane", 326);
 #ifdef DEBUG
 	debug("3615 Builders ready!");

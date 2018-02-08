@@ -20,6 +20,9 @@ uint8_t playerAnswer;
 uint8_t playerLevel;
 
 bool showScores;
+String inputSecret;
+String secretCode = SECRETCODE;
+bool showQRcode = true; 
 
 // les différents états du programme
 ///////////////////////////////////////////////////////////////////////////////
@@ -120,6 +123,7 @@ void loop()
 		programStatus = WaitForKeypress;
 		timeout = 0;
 		display.clearKeyboard();
+		inputSecret = "";
 		break;
 
 	// on affiche la page d'accueil
@@ -138,6 +142,7 @@ void loop()
 		//programStatus = WaitForEnding;
 		timeout = 0;
 		display.clearKeyboard();
+		inputSecret = "";
 		break;
 
 	// attente que quelqu'un se manifeste...
@@ -157,6 +162,17 @@ void loop()
 		// TODO: gérer le code secret pour l'écran de configuration
 		if (display.isKeyPress())
 		{
+			char c = display.getTextKey();
+			inputSecret += c;
+			if(inputSecret == secretCode.substring(0, inputSecret.length()))
+			{
+				if(inputSecret.length() == secretCode.length())
+				{
+					display.clearKeyboard();
+					programStatus = DisplayConfiguration;
+					break;
+				}
+			}
 			display.clearKeyboard();
 			programStatus = DisplayEnterName;
 			break;
@@ -186,6 +202,28 @@ void loop()
 		{
 			display.clearKeyboard();
 			programStatus = DisplayWelcome;
+			break;
+		}
+		if (display.isKeyPress())
+		{
+			char c = display.getTextKey();
+			switch(c)
+			{
+				case 'c':
+					display.clearHiScores();
+					display.bip();
+					break;
+				case 'l':
+					// TODO: load hi-scores
+					break;
+				case 'q':
+					showQRcode = !showQRcode;
+					display.setQRcodeDisplay(showQRcode);
+					display.clearKeyboard();
+					programStatus = DisplayConfiguration;
+					break;
+			}
+			display.clearKeyboard();
 			break;
 		}
 		display.displayChrono(uint8_t(timeout / 1000));

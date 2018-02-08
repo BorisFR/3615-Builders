@@ -73,12 +73,14 @@ class TheDisplay
 
 	  String gamerName;
 	  uint16_t gamerPoints;
+	  bool showQRcode;
 
 	public:
 	  void setup();
 	  void loop();
 
 		void bip();
+		void clearHiScores();
 	  void showPage(MINITEL_PAGE page);
 	  bool isKeyPress();
 	  bool isCancel();
@@ -91,6 +93,8 @@ class TheDisplay
 	  String getInputValue();
 	  bool isInputReady();
 	  bool onPodium();
+	  char getTextKey();
+	  void setQRcodeDisplay(bool value);
 
 };
 

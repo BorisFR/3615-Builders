@@ -34,6 +34,12 @@ void TheDisplay::setup()
 	isInInputTextMode = false;
 	keyIsPressed = false;
 	lastKey = 0;
+	theInput = "*** Boris ***";
+	clearHiScores();
+}
+
+void TheDisplay::clearHiScores()
+{
 	for (uint8_t i = 0; i < MAX_SCORES; i++)
 	{
 		scores[i] = 0; //MAX_SCORES - i;
@@ -57,9 +63,6 @@ void TheDisplay::setup()
 	gamertag[15] = "";
 	gamertag[16] = "";
 	gamertag[17] = "";
-	//gamertag[18] = "";
-	//gamertag[19] = "";
-	theInput = "*** Boris ***";
 	scoreToHighlight = -1;
 }
 
@@ -199,6 +202,16 @@ void TheDisplay::loop()
 	}
 }
 
+char TheDisplay::getTextKey()
+{
+	if (lastKey >= 32 && lastKey <= 126)
+	{
+		char x = ' ' + (lastKey - 32);
+		return x;
+	}
+	return ' ';
+}
+
 void TheDisplay::sendBytes(uint16_t size, const uint8_t bytes[])
 {
 	minitel.noCursor();
@@ -210,6 +223,11 @@ void TheDisplay::sendBytes(uint16_t size, const uint8_t bytes[])
 	//minitelTimeLastCommand = 0;
 }
 
+void TheDisplay::setQRcodeDisplay(bool value)
+{
+	showQRcode = value;
+}
+
 void TheDisplay::showPage(MINITEL_PAGE page)
 {
 	String fullDate;
@@ -218,7 +236,37 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 	switch(page)
 	{
 		case PageConfiguration:
-			sendBytes(PAGE_RESULTAT_SIZE, page_resultat);
+			sendBytes(PAGE_HEADER_SIZE, page_header);
+			minitel.moveCursorXY(3, 5);
+			minitel.attributs(CARACTERE_BLEU);
+			minitel.print("Configuration");
+
+			minitel.moveCursorXY(1, 8);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
+			minitel.print("C");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" Mettre les hi-scores à zéro");
+
+			minitel.moveCursorXY(1, 9);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
+			minitel.print("L");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" Charger les hi-scores du jour");
+
+			minitel.moveCursorXY(1, 9);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
+			minitel.print("Q");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" Affiche le QRcode : " + String(showQRcode));
+
+			//writeTextInBox("Vous avez été trop long pour répondre, la partie est terminée.", 2, 8, 36, 4, CARACTERE_BLANC);
+			writeCenter("Appuyez sur ENVOI pour quitter", 24, CARACTERE_BLANC, true);
 			break;
 
 		case PageScores:
@@ -351,6 +399,8 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			String text = String(day()) + "/" + String(month()) + "/" + String(year()) +
 						  " a " + String(on2(hour())) + ":" + String(on2(minute())) + ":" + String(on2(second())) +
 						  " - Joueur : " + gamerName + " - Score : " + String(gamerPoints);
+
+			writeCenter(text, 24, CARACTERE_ROUGE, false);
 
 			generateQrCode(text.toUpperCase());
 

@@ -153,6 +153,11 @@ void TheData::listFiles()
 
 void TheData::loadScores()
 {
+	for(uint8_t i = 0; i < MAX_SCORES; i++)
+	{
+		hiscoresName[i] = "";
+		hiscoresPoints[i] = 0;
+	}
 	if (!isStatusOk)
 		return;
 	Serial.println("[SD] loading scores...");
@@ -183,10 +188,28 @@ void TheData::loadScores()
 		}
 		entry.close();
 	}
+	Serial.println("[SD] loading scores done");
 }
 
 int8_t TheData::insertInBoard(String name, uint16_t points)
 {
+	for (uint8_t i = 0; i < MAX_SCORES;i++)
+	{
+		if(hiscoresPoints[i] < points)
+		{
+			// meilleur score
+			// on décale le restant du tableau
+			for (uint8_t j = MAX_SCORES - 2; j > i; j--)
+			{
+				hiscoresPoints[j] = hiscoresPoints[j - 1];
+				hiscoresName[j] = hiscoresName[j - 1];
+			}
+			// on insère notre joueur
+			hiscoresPoints[i] = points;
+			hiscoresName[i] = name;
+			return i;
+		}
+	}
 	return -1;
 }
 

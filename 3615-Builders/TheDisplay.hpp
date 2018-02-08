@@ -95,6 +95,7 @@ class TheDisplay
 	  bool onPodium();
 	  char getTextKey();
 	  void setQRcodeDisplay(bool value);
+	  void setHiScore(uint8_t place, String name, uint16_t points);
 
 };
 

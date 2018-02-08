@@ -823,3 +823,9 @@ bool TheDisplay::onPodium()
 		return true;
 	return false;
 }
+
+void TheDisplay::setHiScore(uint8_t place, String name, uint16_t points)
+{
+	scores[place] = points;
+	gamertag[place] = name;
+}

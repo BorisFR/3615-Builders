@@ -95,6 +95,10 @@ void setup()
 	digitalClockDisplay();
 	game.setup();
 	display.setup();
+	for(uint8_t i = 0; i < MAX_SCORES; i++)
+	{
+		display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
+	}
 	showScores = false;
 	programStatus = DisplayWelcome;
 
@@ -214,7 +218,11 @@ void loop()
 					display.bip();
 					break;
 				case 'l':
-					// TODO: load hi-scores
+					theData.loadScores();
+					for(uint8_t i = 0; i < MAX_SCORES; i++)
+					{
+						display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
+					}
 					break;
 				case 'q':
 					showQRcode = !showQRcode;

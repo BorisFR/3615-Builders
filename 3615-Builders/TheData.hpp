@@ -25,6 +25,9 @@ class TheData
 		void listFiles();
 		void saveScore(String gamertag, uint16_t points, String questions[MAX_QUESTIONS_PER_GAME], uint8_t answers[MAX_QUESTIONS_PER_GAME]);
 
+		String hiscoresName[MAX_SCORES];
+		uint16_t hiscoresPoints[MAX_SCORES];
+
 };
 
 #endif

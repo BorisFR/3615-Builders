@@ -73,6 +73,7 @@ enum PlayerStatus
 
 // nombre de joueurs au classement
 #define MAX_SCORES 18
+#define MAX_PODIUM_PLAYER 10
 
 // http://www.qrcode.com/en/about/version.html
 // Nom du joueur : 14

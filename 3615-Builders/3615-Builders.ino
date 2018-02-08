@@ -23,6 +23,7 @@ bool showScores;
 String inputSecret;
 String secretCode = SECRETCODE;
 bool showQRcode = true; 
+uint8_t showQRcodeFor = MAX_PODIUM_PLAYER;
 
 // les différents états du programme
 ///////////////////////////////////////////////////////////////////////////////
@@ -99,6 +100,7 @@ void setup()
 	{
 		display.setHiScore(i, theData.hiscoresName[i], theData.hiscoresPoints[i]);
 	}
+	display.setPlayerPodium(showQRcodeFor);
 	showScores = false;
 	programStatus = DisplayWelcome;
 
@@ -229,6 +231,18 @@ void loop()
 					display.setQRcodeDisplay(showQRcode);
 					display.clearKeyboard();
 					programStatus = DisplayConfiguration;
+					break;
+				case 'p':
+					showQRcodeFor++;
+					if(showQRcodeFor > MAX_PODIUM_PLAYER)
+						showQRcodeFor = 1;
+					display.setPlayerPodium(showQRcodeFor);
+					display.clearKeyboard();
+					programStatus = DisplayConfiguration;
+					break;
+				case 0x0d:
+					display.clearKeyboard();
+					programStatus = DisplayWelcome;
 					break;
 			}
 			display.clearKeyboard();

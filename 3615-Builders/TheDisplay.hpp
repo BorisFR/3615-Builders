@@ -74,28 +74,30 @@ class TheDisplay
 	  String gamerName;
 	  uint16_t gamerPoints;
 	  bool showQRcode;
+	  uint8_t playerOnPodium;
 
 	public:
-	  void setup();
-	  void loop();
+		void setup();
+	 	void loop();
 
 		void bip();
 		void clearHiScores();
-	  void showPage(MINITEL_PAGE page);
-	  bool isKeyPress();
-	  bool isCancel();
-	  void clearKeyboard();
-	  void showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3);
-	  bool displayChrono(uint8_t value);
-	  uint8_t getLevel();
-	  uint8_t getAnswer();
-	  void showResult(String gamer, uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
-	  String getInputValue();
-	  bool isInputReady();
-	  bool onPodium();
-	  char getTextKey();
-	  void setQRcodeDisplay(bool value);
-	  void setHiScore(uint8_t place, String name, uint16_t points);
+		void showPage(MINITEL_PAGE page);
+		bool isKeyPress();
+		bool isCancel();
+		void clearKeyboard();
+		void showQuestion(uint8_t number, uint8_t level, String category, String question, String answer1, String answer2, String answer3);
+		bool displayChrono(uint8_t value);
+		uint8_t getLevel();
+		uint8_t getAnswer();
+		void showResult(String gamer, uint8_t goodAnswers, uint8_t badAnswers, PlayerStatus status, String motto, uint16_t points);
+		String getInputValue();
+		bool isInputReady();
+		bool onPodium();
+		char getTextKey();
+		void setQRcodeDisplay(bool value);
+		void setHiScore(uint8_t place, String name, uint16_t points);
+		void setPlayerPodium(uint8_t value);
 
 };
 

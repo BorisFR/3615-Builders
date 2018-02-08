@@ -209,6 +209,10 @@ char TheDisplay::getTextKey()
 		char x = ' ' + (lastKey - 32);
 		return x;
 	}
+	if(lastKey == ENVOI)
+	{
+		return 0x0d;
+	}
 	return ' ';
 }
 
@@ -257,13 +261,24 @@ void TheDisplay::showPage(MINITEL_PAGE page)
 			minitel.attributs(CARACTERE_BLANC);
 			minitel.print(" Charger les hi-scores du jour");
 
-			minitel.moveCursorXY(1, 9);
+			minitel.moveCursorXY(1, 10);
 			minitel.attributs(CARACTERE_VERT);
 			minitel.attributs(INVERSION_FOND);
 			minitel.print("Q");
 			minitel.attributs(FOND_NORMAL);
 			minitel.attributs(CARACTERE_BLANC);
 			minitel.print(" Affiche le QRcode : " + String(showQRcode));
+
+			minitel.moveCursorXY(1, 11);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.attributs(INVERSION_FOND);
+			minitel.print("P");
+			minitel.attributs(FOND_NORMAL);
+			minitel.attributs(CARACTERE_BLANC);
+			minitel.print(" QRcode classement joueurs : " + String(playerOnPodium));
+			minitel.moveCursorXY(3, 12);
+			minitel.attributs(CARACTERE_VERT);
+			minitel.print("(QRcode non affiché pour les autres)");
 
 			//writeTextInBox("Vous avez été trop long pour répondre, la partie est terminée.", 2, 8, 36, 4, CARACTERE_BLANC);
 			writeCenter("Appuyez sur ENVOI pour quitter", 24, CARACTERE_BLANC, true);
@@ -630,8 +645,7 @@ bool TheDisplay::isCancel()
 		(lastKey == RETOUR) ||
 		(lastKey == REPETITION) ||
 		(lastKey == GUIDE) ||
-		(lastKey == SUITE) ||
-		(lastKey == ENVOI))
+		(lastKey == SUITE))
 	{
 		return true;
 	}
@@ -819,7 +833,7 @@ void TheDisplay::showResult(String gamer, uint8_t goodAnswers, uint8_t badAnswer
 
 bool TheDisplay::onPodium()
 {
-	if (scoreToHighlight < 3)
+	if (scoreToHighlight <= playerOnPodium)
 		return true;
 	return false;
 }
@@ -828,4 +842,9 @@ void TheDisplay::setHiScore(uint8_t place, String name, uint16_t points)
 {
 	scores[place] = points;
 	gamertag[place] = name;
+}
+
+void TheDisplay::setPlayerPodium(uint8_t value)
+{
+	playerOnPodium = value;
 }

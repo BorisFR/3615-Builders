@@ -70,6 +70,8 @@ enum PlayerStatus
 
 // temps limite pour répondre
 #define SECONDS_TO_ANSWER 30 * 1000
+// délai pour avoir le score max à une réponse : 1500 = 1,5 seconde
+#define BONUS_MS 1500
 
 // nombre de joueurs au classement
 #define MAX_SCORES 18

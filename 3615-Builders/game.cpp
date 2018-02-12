@@ -209,7 +209,7 @@ void Game::playAnswer(uint8_t answer)
 	}
 	else
 	{
-		answerinGame[currentQuestion] = 1;
+		answerinGame[currentQuestion] = 0;
 		badAnswers++;
 		giveGoodAnswer = false;
 		countSuccessiveBad++;

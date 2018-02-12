@@ -193,7 +193,6 @@ void Game::playAnswer(uint8_t answer)
 
 	if (answer == currentGoodAnswer)
 	{
-		answerinGame[currentQuestion] = 1;
 		goodAnswers++;
 		giveGoodAnswer = true;
 		countSuccessiveGood++;
@@ -203,6 +202,7 @@ void Game::playAnswer(uint8_t answer)
 		Serial.print("** Current score:" + String(points) + " => delay:" + String(delay) + "=" + String(ptsDelay));
 #endif
 		points += (2 * currentLevel) + ptsDelay;
+		answerinGame[currentQuestion] = points;
 #ifdef DEBUG
 		Serial.println(" ** New score:" + String(points));
 #endif

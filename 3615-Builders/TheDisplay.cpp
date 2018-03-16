@@ -50,12 +50,12 @@ void TheDisplay::clearHiScores()
 	gamertag[6] = "       Boris ";
 	gamertag[7] = " - 02/2018 - ";
 	gamertag[8] = "";
-	gamertag[9] = "Just in time";
-	gamertag[10] = "    for";
-	gamertag[11] = "* M A K E R";
-	gamertag[12] = "  F A I R E *";
+	gamertag[9] =  "*  à toi de  *";
+	gamertag[10] = "*    jouer   *";
+	gamertag[11] = "";
+	gamertag[12] = " --  Amiens -- ";
 	gamertag[13] = "";
-	gamertag[14] = " -- Lille -- ";
+	gamertag[14] = "";
 	gamertag[15] = "";
 	gamertag[16] = "";
 	gamertag[17] = "";

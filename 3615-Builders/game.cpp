@@ -198,6 +198,11 @@ void Game::playAnswer(uint8_t answer)
 		countSuccessiveGood++;
 		countSuccessiveBad = 0;
 		unsigned long ptsDelay = 6 - (((delay - BONUS_MS) / 1000) / 5);
+		if(delay < BONUS_MS) {
+			ptsDelay = 6 - (((BONUS_MS - delay) / 1000) / 5);
+		}
+		if((BONUS_MS - delay) < 200) ptsDelay = 0;
+		if((delay - BONUS_MS) < 200) ptsDelay = 0;
 #ifdef DEBUG
 		Serial.print("** Current score:" + String(points) + " => delay:" + String(delay) + "=" + String(ptsDelay));
 #endif

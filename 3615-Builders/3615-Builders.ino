@@ -117,6 +117,8 @@ void setup()
 #endif
 }
 
+bool hackInProgress = false;
+
 // boucle sans fin du jeu
 ///////////////////////////////////////////////////////////////////////////////
 void loop()
@@ -136,6 +138,7 @@ void loop()
 		timeout = 0;
 		display.clearKeyboard();
 		inputSecret = "";
+		hackInProgress = false;
 		break;
 
 	// on affiche la page d'accueil
@@ -155,6 +158,7 @@ void loop()
 		timeout = 0;
 		display.clearKeyboard();
 		inputSecret = "";
+		hackInProgress = false;
 		break;
 
 	// attente que quelqu'un se manifeste...
@@ -201,6 +205,7 @@ void loop()
 		programStatus = EntryConfiguration;
 		timeout = 0;
 		display.clearKeyboard();
+		hackInProgress = false;
 		break;
 
 	// les saisies de l'écran de config
@@ -289,6 +294,7 @@ void loop()
 		programStatus = WaitForName;
 		timeout = 0;
 		display.clearKeyboard();
+		hackInProgress = false;
 		break;
 
 	// les saisies de l'écran de config
@@ -323,6 +329,7 @@ void loop()
 		programStatus = WaitForLevel;
 		timeout = 0;
 		display.clearKeyboard();
+		hackInProgress = false;
 		break;
 
 	// attente du choix de niveau
@@ -364,6 +371,7 @@ void loop()
 		display.showPage(PageQuestion);
 		// on demande l'affichage de la 1ère question
 		programStatus = DisplayQuestion;
+		hackInProgress = false;
 		break;
 
 	// on affiche une question
